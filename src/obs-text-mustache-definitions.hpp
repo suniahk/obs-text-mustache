@@ -27,8 +27,8 @@ public slots:
 	void ShowDialog();
 	void HideDialog();
 	void OBSSignal(void *data, const char *signal,
-			      calldata_t *call_data)
-	void OBSEvent(enum obs_frontend_event event, void *)
+			      calldata_t *call_data);
+	void OBSEvent(enum obs_frontend_event event, void *);
 
 private:
 	std::map<QString, QLineEdit *> textLines;
