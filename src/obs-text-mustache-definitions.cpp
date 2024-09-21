@@ -20,9 +20,6 @@
 
 using namespace std;
 
-#define QT_UTF8(str) QString::fromUtf8(str)
-#define QT_TO_UTF8(str) str.toUtf8().constData()
-
 const wregex variable_regex(L"\\{\\{(\\w+)\\}\\}");
 
 static bool findVariables(void *data, obs_source_t *source)
