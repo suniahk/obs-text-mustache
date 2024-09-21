@@ -20,7 +20,8 @@
 
 using namespace std;
 
-OBSTextMustacheDefinitions *dialog;
+#define QT_UTF8(str) QString::fromUtf8(str)
+#define QT_TO_UTF8(str) str.toUtf8().constData()
 
 const wregex variable_regex(L"\\{\\{(\\w+)\\}\\}");
 
@@ -34,14 +35,17 @@ static bool findVariables(void *data, obs_source_t *source)
 	if (!strcmp("text_gdiplus_mustache_v2", id)) {
 		TextSource *mySource = reinterpret_cast<TextSource *>(
 			obs_obj_get_data(source));
+
 		blog(LOG_DEBUG,
 		     "findVariables: found text_gdiplus_mustache_v2 source with text %s",
 		     QString::fromStdWString(mySource->text)
 			     .toStdString()
 			     .c_str());
+
 		const auto variables_begin =
 			wsregex_iterator(mySource->text.begin(),
 					 mySource->text.end(), variable_regex);
+
 		const auto variables_end = wsregex_iterator();
 		for (wsregex_iterator i = variables_begin; i != variables_end;
 		     ++i) {
@@ -74,15 +78,15 @@ static bool updateText(void *data, obs_source_t *source)
 	return true;
 }
 
-static void loadVariablesAndValues(obs_data_t *data, void *param)
-{
-	VariablesAndValues *const variablesAndValues =
-		VariablesAndValues::getInstance();
-	const auto variables = variablesAndValues->getVariables();
+// static void loadVariablesAndValues(obs_data_t *data, void *param)
+// {
+// 	VariablesAndValues *const variablesAndValues =
+// 		VariablesAndValues::getInstance();
+// 	const auto variables = variablesAndValues->getVariables();
 
-	variablesAndValues->putValue(obs_data_get_string(data, "variable"),
-				     obs_data_get_string(data, "value"));
-}
+// 	variablesAndValues->putValue(obs_data_get_string(data, "variable"),
+// 				     obs_data_get_string(data, "value"));
+// }
 
 OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	: QDialog(parent),
@@ -98,22 +102,22 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	QObject::connect(ui->buttonBox->button(QDialogButtonBox::Close),
 			 &QPushButton::clicked, this,
 			 &OBSTextMustacheDefinitions::HideDialog);
-	QObject::connect(&timer, SIGNAL(timeout()), SLOT(TimerTextUpdate()));
-	timer.start(250);
 }
 
 void OBSTextMustacheDefinitions::closeEvent(QCloseEvent *)
 {
-	obs_frontend_save();
+	//obs_frontend_save();
 }
 
-void OBSTextMustacheDefinitions::ShowDialog()
-{
-	VariablesAndValues *const variablesAndValues =
+void OBSTextMustacheDefinitions::UpdateVariablesAndValues() {
+	obs_enum_sources(findVariables, NULL);
+}
+
+void OBSTextMustacheDefinitions::UpdateUI() {
+VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 	ui->gridLayout->setColumnStretch(0, 1);
 	ui->gridLayout->setColumnStretch(1, 2);
-	obs_enum_sources(findVariables, NULL);
 	const auto variables = variablesAndValues->getVariables();
 	int currentRow = 0;
 	textLines.clear();
@@ -128,16 +132,11 @@ void OBSTextMustacheDefinitions::ShowDialog()
 		textLines[*it] = lineEdit;
 		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
-	setVisible(true);
-	QTimer::singleShot(250, this, &OBSTextMustacheDefinitions::show);
 }
 
-void OBSTextMustacheDefinitions::HideDialog()
-{
+void OBSTextMustacheDefinitions::UpdateVariables() {
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
-
-	setVisible(false);
 	const auto variables = variablesAndValues->getVariables();
 	for (auto it = variables.begin(); it != variables.end(); ++it) {
 		const auto variable = *it;
@@ -147,105 +146,138 @@ void OBSTextMustacheDefinitions::HideDialog()
 		     variable.toStdString().c_str(),
 		     value.toStdString().c_str());
 	}
+}
+
+void OBSTextMustacheDefinitions::ShowDialog()
+{
+	UpdateUI();
+	setVisible(true);
+	//QTimer::singleShot(250, this, &OBSTextMustacheDefinitions::show);
+}
+
+void OBSTextMustacheDefinitions::HideDialog()
+{
+	setVisible(false);
+	UpdateVariables();
+	
 	obs_enum_sources(updateText, NULL);
 
 	QTimer::singleShot(250, this, &OBSTextMustacheDefinitions::hide);
 }
 
-void OBSTextMustacheDefinitions::TimerTextUpdate()
+// void OBSTextMustacheDefinitions::TimerTextUpdate()
+// {
+// 	//obs_enum_sources(updateText, NULL);
+// 	//timer.start(250);
+// }
+
+void OBSTextMustacheDefinitions::OBSSignal(void *data, const char *signal,
+			      calldata_t *call_data)
 {
-	obs_enum_sources(updateText, NULL);
-	timer.start(250);
+	UNUSED_PARAMETER(signal);
+	obs_source_t *source =
+		static_cast<obs_source_t *>(calldata_ptr(call_data, "source"));
+	if (!source)
+		return;
+
+	OBSTextMustacheDefinitions *obsTextMustache = static_cast<OBSTextMustacheDefinitions *>(data);
+	QMetaObject::invokeMethod(obsTextMustache, "UpdateVariablesAndValues",
+				  Qt::QueuedConnection);
 }
 
-static void SaveOBSTextMustacheDefinitions(obs_data_t *save_data, bool saving,
-					   void *)
-{
-	VariablesAndValues *variablesAndValues =
-		VariablesAndValues::getInstance();
-	if (saving) {
-		const OBSDataAutoRelease obj = obs_data_create();
-		const OBSDataArrayAutoRelease array = obs_data_array_create();
-		const auto variables = variablesAndValues->getVariables();
-		for (auto it = variables.begin(); it != variables.end(); ++it) {
-			const QString variable = *it;
-			const QString value = variablesAndValues->getValue(*it);
-			blog(LOG_INFO,
-			     "SaveOBSTextMustacheDefinitions: Considering saving variable %s",
-			     variable.toStdString().c_str());
-			if (value.size() > 0) {
-				const OBSDataAutoRelease keyValue =
-					obs_data_create();
-				blog(LOG_INFO,
-				     "SaveOBSTextMustacheDefinitions: Saving variable %s as %s",
-				     variable.toStdString().c_str(),
-				     value.toStdString().c_str());
-				obs_data_set_string(
-					keyValue, "variable",
-					variable.toStdString().c_str());
-				obs_data_set_string(
-					keyValue, "value",
-					value.toStdString().c_str());
+// static void SaveOBSTextMustacheDefinitions(obs_data_t *save_data, bool saving,
+// 					   void *)
+// {
+// 	VariablesAndValues *variablesAndValues =
+// 		VariablesAndValues::getInstance();
+// 	if (saving) {
+// 		const OBSDataAutoRelease obj = obs_data_create();
+// 		const OBSDataArrayAutoRelease array = obs_data_array_create();
+// 		const auto variables = variablesAndValues->getVariables();
+// 		for (auto it = variables.begin(); it != variables.end(); ++it) {
+// 			const QString variable = *it;
+// 			const QString value = variablesAndValues->getValue(*it);
+// 			blog(LOG_INFO,
+// 			     "SaveOBSTextMustacheDefinitions: Considering saving variable %s",
+// 			     variable.toStdString().c_str());
+// 			if (value.size() > 0) {
+// 				const OBSDataAutoRelease keyValue =
+// 					obs_data_create();
+// 				blog(LOG_INFO,
+// 				     "SaveOBSTextMustacheDefinitions: Saving variable %s as %s",
+// 				     variable.toStdString().c_str(),
+// 				     value.toStdString().c_str());
+// 				obs_data_set_string(
+// 					keyValue, "variable",
+// 					variable.toStdString().c_str());
+// 				obs_data_set_string(
+// 					keyValue, "value",
+// 					value.toStdString().c_str());
 
-				obs_data_array_push_back(array, keyValue);
+// 				obs_data_array_push_back(array, keyValue);
 
-				blog(LOG_INFO,
-				     "SaveOBSTextMustacheDefinitions: Done saving variable %s as %s",
-				     variable.toStdString().c_str(),
-				     value.toStdString().c_str());
-			}
-		}
-		obs_data_set_array(obj, "variablesAndValues", array);
-		blog(LOG_INFO,
-		     "SaveOBSTextMustacheDefinitions: About to save data");
-		obs_data_set_obj(save_data, "obs-text-mustache", obj);
-		// variablesAndValues->clear();
-		blog(LOG_INFO,
-		     "SaveOBSTextMustacheDefinitions: Done saving data");
-	} else {
-		OBSDataAutoRelease obj =
-			obs_data_get_obj(save_data, "obs-text-mustache");
+// 				blog(LOG_INFO,
+// 				     "SaveOBSTextMustacheDefinitions: Done saving variable %s as %s",
+// 				     variable.toStdString().c_str(),
+// 				     value.toStdString().c_str());
+// 			}
+// 		}
+// 		obs_data_set_array(obj, "variablesAndValues", array);
+// 		blog(LOG_INFO,
+// 		     "SaveOBSTextMustacheDefinitions: About to save data");
+// 		obs_data_set_obj(save_data, "obs-text-mustache", obj);
+// 		// variablesAndValues->clear();
+// 		blog(LOG_INFO,
+// 		     "SaveOBSTextMustacheDefinitions: Done saving data");
+// 	} else {
+// 		OBSDataAutoRelease obj =
+// 			obs_data_get_obj(save_data, "obs-text-mustache");
 
-		if (!obj)
-			obj = obs_data_create();
-		blog(LOG_INFO,
-		     "SaveOBSTextMustacheDefinitions: loading variables");
-		variablesAndValues->clear();
-		obs_data_array_enum(obs_data_get_array(obj,
-						       "variablesAndValues"),
-				    loadVariablesAndValues, NULL);
-	}
-}
+// 		if (!obj)
+// 			obj = obs_data_create();
+// 		blog(LOG_INFO,
+// 		     "SaveOBSTextMustacheDefinitions: loading variables");
+// 		variablesAndValues->clear();
+// 		obs_data_array_enum(obs_data_get_array(obj,
+// 						       "variablesAndValues"),
+// 				    loadVariablesAndValues, NULL);
+// 	}
+// }
 
-extern "C" void FreeOBSTextMustacheDefinitions() {}
-
-extern "C" void ResetDialog()
-{
-	QMainWindow *window = (QMainWindow *)obs_frontend_get_main_window();
-
-	dialog = new OBSTextMustacheDefinitions(window);
-}
-
-static void OBSEvent(enum obs_frontend_event event, void *)
+void OBSTextMustacheDefinitions::OBSEvent(enum obs_frontend_event event, void *)
 {
 	blog(LOG_DEBUG, "OBSEvent: %d", event);
+
 	switch (event) {
-	case OBS_FRONTEND_EVENT_EXIT: {
-		obs_frontend_save();
-		FreeOBSTextMustacheDefinitions();
-		break;
-	}
-	case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CLEANUP: {
-		VariablesAndValues *variablesAndValues =
-			VariablesAndValues::getInstance();
-		variablesAndValues->clear();
-		ResetDialog();
-	}
-	case OBS_FRONTEND_EVENT_FINISHED_LOADING: {
+	case OBS_FRONTEND_EVENT_SCENE_CHANGED:
+	case OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED:
 		obs_enum_sources(updateText, NULL);
 		break;
+	default:
+		break;
 	}
-	}
+	// switch (event) {
+	// case OBS_FRONTEND_EVENT_EXIT: {
+	// 	obs_frontend_save();
+	// 	FreeOBSTextMustacheDefinitions();
+	// 	break;
+	// }
+	// case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CLEANUP: {
+	// 	VariablesAndValues *variablesAndValues =
+	// 		VariablesAndValues::getInstance();
+	// 	variablesAndValues->clear();
+	// 	ResetDialog();
+	// }
+	// case OBS_FRONTEND_EVENT_FINISHED_LOADING: {
+	// 	obs_enum_sources(updateText, NULL);
+	// 	break;
+	// }
+	// }
+}
+
+OBSTextMustacheDefinitions::~OBSTextMustacheDefinitions() {
+	signal_handler_disconnect_global(obs_get_signal_handler(), OBSSignal,
+					 this);
 }
 
 extern "C" void InitOBSTextMustacheDefinitions()
@@ -253,18 +285,22 @@ extern "C" void InitOBSTextMustacheDefinitions()
 	QAction *const action = (QAction *)obs_frontend_add_tools_menu_qaction(
 		obs_module_text("TextGDIPlusDefinitions"));
 
+	const QMainWindow *window = (QMainWindow *)obs_frontend_get_main_window();
+
 	obs_frontend_push_ui_translation(obs_module_get_string);
 
-	ResetDialog();
+	auto *obsTextMustache = new OBSTextMustacheDefinitions(window);
 
 	const auto cb = []() {
-		dialog->ShowDialog();
+		obsTextMustache->ShowDialog();
 	};
 
 	obs_frontend_pop_ui_translation();
 
-	obs_frontend_add_save_callback(SaveOBSTextMustacheDefinitions, nullptr);
-	obs_frontend_add_event_callback(OBSEvent, nullptr);
+	obs_frontend_add_event_callback(obsTextMustache->OBSEvent, nullptr);
+
+	signal_handler_connect_global(obs_get_signal_handler(), obsTextMustache->OBSSignalHandler,
+				      this);
 
 	action->connect(action, &QAction::triggered, cb);
 }

@@ -25,8 +25,6 @@ OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
 void InitOBSTextMustacheDefinitions();
-void ResetDialog();
-void FreeOBSTextMustacheDefinitions();
 
 bool obs_module_load(void)
 {
@@ -37,7 +35,6 @@ bool obs_module_load(void)
 
 void obs_module_unload(void)
 {
-	FreeOBSTextMustacheDefinitions();
 	FreeOBSText();
 	obs_log(LOG_INFO, "plugin unloaded");
 }
