@@ -21,7 +21,7 @@ public:
 	void closeEvent(QCloseEvent *event) override;
 
 public slots:
-	void UpdateVariablesAndValues()
+	void UpdateVariablesAndValues();
 	void UpdateUI();
 	void UpdateVariables();
 	void ShowDialog();
