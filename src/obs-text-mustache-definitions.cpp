@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QObject>
 #include <QPushButton>
+#include <QString>
 #include <QLabel>
 #include <QLineEdit>
 #include "obs-text-mustache-definitions.hpp"
@@ -127,7 +128,7 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *data, obs_source_t *source) {
 	//mustache->ui->gridLayout->setColumnStretch(1, 2);
 blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
 	const auto variables = variablesAndValues->getVariables();
-	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Total Variables: %s", variables.size().toStdString().c_str());
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Total Variables: %s", std::to_string(variables.size()));
 	int currentRow = 0;
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI textlines clear");
 	if(mustache->textLines.size() > 0) {
