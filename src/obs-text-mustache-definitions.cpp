@@ -113,8 +113,9 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 
 bool OBSTextMustacheDefinitions::UpdateUI(void *data, obs_source_t *source) {
 	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(data);
+	const char *id = obs_source_get_id(source);
 
-	if(obs_source_removed(source)) {
+	if(obs_source_removed(source) || strcmp("text_gdiplus_mustache_v2", id)) {
 		return true;
 	}
 	VariablesAndValues *const variablesAndValues =
