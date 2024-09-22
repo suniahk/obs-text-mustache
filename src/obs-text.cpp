@@ -993,7 +993,7 @@ static void missing_file_callback(void *src, const char *new_path, void *data)
 	UNUSED_PARAMETER(data);
 }
 
-extern "C" bool InitOBSText()
+bool InitOBSText()
 {
 	obs_source_info si = {};
 	si.id = "text_gdiplus_mustache";
@@ -1072,7 +1072,7 @@ extern "C" bool InitOBSText()
 	return true;
 }
 
-extern "C" void FreeOBSText()
+void FreeOBSText()
 {
 	GdiplusShutdown(gdip_token);
 }
