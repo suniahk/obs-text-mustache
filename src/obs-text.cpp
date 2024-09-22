@@ -780,11 +780,6 @@ static ULONG_PTR gdip_token = 0;
 //OBS_DECLARE_MODULE()
 //OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
-MODULE_EXPORT const char *obs_module_description(void)
-{
-	return "Windows GDI+ text source with templating";
-}
-
 #define set_vis(var, val, show)                           \
 	do {                                              \
 		p = obs_properties_get(props, val);       \
