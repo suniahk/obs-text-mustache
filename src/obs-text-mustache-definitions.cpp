@@ -21,7 +21,7 @@ using namespace std;
 
 const wregex variable_regex(L"\\{\\{(\\w+)\\}\\}");
 
-static bool findVariables(void *data, obs_source_t *source)
+void OBSTextMustacheDefinitions::FindVariables(void *data, obs_source_t *source)
 {
 	VariablesAndValues *variablesAndValues =
 		VariablesAndValues::getInstance();
@@ -60,10 +60,9 @@ static bool findVariables(void *data, obs_source_t *source)
 			}
 		}
 	}
-	return true;
 }
 
-static bool updateText(void *data, obs_source_t *source)
+void OBSTextMustacheDefinitions::UpdateText(void *data, obs_source_t *source)
 {
 	const char *id = obs_source_get_id(source);
 	if (!strcmp("text_gdiplus_mustache_v2", id)) {
@@ -71,7 +70,6 @@ static bool updateText(void *data, obs_source_t *source)
 			obs_obj_get_data(source));
 		mySource->UpdateTextToRender();
 	}
-	return true;
 }
 
 // static void loadVariablesAndValues(obs_data_t *data, void *param)
@@ -146,10 +144,10 @@ void OBSTextMustacheDefinitions::UpdateVariables(void *param, obs_source_t *sour
 
 void OBSTextMustacheDefinitions::UpdateAll()
 {
-	obs_enum_sources(findVariables, this);
+	obs_enum_sources(FindVariables, this);
 	obs_enum_sources(UpdateVariables, this);
 	obs_enum_sources(UpdateUI, this);
-	obs_enum_sources(updateText, this);
+	obs_enum_sources(UpdateText, this);
 }
 
 // void OBSTextMustacheDefinitions::ShowDialog()

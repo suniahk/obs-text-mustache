@@ -28,6 +28,8 @@ private:
 	std::map<QString, QLineEdit *> textLines;
 	static void UpdateUI(void *param, obs_source_t *source);
 	static void UpdateVariables(void *param, obs_source_t *source);
+	static void FindVariables(void *data, obs_source_t *source);
+	static void UpdateText(void *data, obs_source_t *source);
 	void UpdateAll();
 	//void UpdateVariablesAndValues();
 };
