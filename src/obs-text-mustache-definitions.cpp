@@ -141,10 +141,11 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
 bool OBSTextMustacheDefinitions::UpdateVariables(void *param, obs_source_t *source) {
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
+		OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(param);
 	const auto variables = variablesAndValues->getVariables();
 	for (auto it = variables.begin(); it != variables.end(); ++it) {
 		const auto variable = *it;
-		const auto value = textLines[*it]->text();
+		const auto value = mustache->textLines[*it]->text();
 		variablesAndValues->putValue(variable, value);
 		blog(LOG_DEBUG, "UpdateVariables: Setting variable %s to %s",
 		     variable.toStdString().c_str(),
