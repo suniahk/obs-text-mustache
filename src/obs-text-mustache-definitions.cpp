@@ -3,6 +3,9 @@
 #include <string>
 #include <regex>
 #include <iterator>
+#include <obs.hpp>
+#include <util/util.hpp>
+#include <util/platform.h>
 #include <QAction>
 #include <QWidget>
 #include <QTimer>
@@ -11,6 +14,8 @@
 #include <QLabel>
 #include <QLineEdit>
 #include "obs-text-mustache-definitions.hpp"
+#include "obs-text.hpp"
+#include "variables.hpp"
 
 using namespace std;
 
