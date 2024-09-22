@@ -12,7 +12,7 @@
 
 class QCloseEvent;
 
-class OBSTextMustacheDefinitions : public QDialog {
+class OBSTextMustacheDefinitions : public QWidget {
 	Q_OBJECT
 
 public:

@@ -8,7 +8,7 @@
 #include "util/platform.h"
 #include <QAction>
 #include <QMainWindow>
-#include <QDialog>
+#include <QWidget>
 #include <QTimer>
 #include <QObject>
 #include <QPushButton>
@@ -86,7 +86,7 @@ static bool updateText(void *data, obs_source_t *source)
 // }
 
 OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
-	: QDialog(parent),
+	: QWidget(parent),
 	  ui(new Ui_OBSTextMustacheDefinitions)
 {
 	ui->setupUi(this);
@@ -107,13 +107,6 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 
 
 	action->connect(action, &QAction::triggered, cb);
-
-	QObject::connect(ui->buttonBox->button(QDialogButtonBox::Close),
-			 &QPushButton::clicked, this,
-			 &OBSTextMustacheDefinitions::hide);
-	QObject::connect(ui->buttonBox->button(QDialogButtonBox::Close),
-			 &QPushButton::clicked, this,
-			 &OBSTextMustacheDefinitions::HideDialog);
 }
 
 // void OBSTextMustacheDefinitions::closeEvent(QCloseEvent *)

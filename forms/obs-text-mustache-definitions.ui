@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>OBSTextMustacheDefinitions</class>
- <widget class="QDialog" name="OBSTextMustacheDefinitions">
+ <widget class="QWidget" name="OBSTextMustacheDefinitions">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -35,13 +35,6 @@
         </spacer>
        </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Close</set>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>
