@@ -26,7 +26,6 @@ private:
 	static void OBSSignal(void *data, const char *signal,
 			      calldata_t *call_data);
 	static void OBSEvent(enum obs_frontend_event event, void *);
-	static bool UpdateUI(void *data, obs_source_t *source);
 	static bool FindVariables(void *data, obs_source_t *source);
 	static bool UpdateVariables(void *data, obs_source_t *source);
 	static bool UpdateRenderedText(void *data, obs_source_t *source);

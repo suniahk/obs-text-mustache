@@ -112,49 +112,6 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 // 	obs_enum_sources(findVariables, this);
 // }
 
-bool OBSTextMustacheDefinitions::UpdateUI(void *data, obs_source_t *source) {
-	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(data);
-	const char *id = obs_source_get_id(source);
-
-	if(obs_source_removed(source) || strcmp("text_gdiplus_mustache_v2", id)) {
-		return true;
-	}
-	VariablesAndValues *const variablesAndValues =
-		VariablesAndValues::getInstance();
-
-	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Triggered");
-
-	//mustache->ui->gridLayout->setColumnStretch(0, 1);
-	//mustache->ui->gridLayout->setColumnStretch(1, 2);
-blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
-	const auto variables = variablesAndValues->getVariables();
-	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Total Variables: %s", std::to_string(variables.size()));
-	int currentRow = 0;
-	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI textlines clear: %s elements", std::to_string(mustache->textLines.size()));
-	if(mustache->textLines.size() > 0) {
-		mustache->textLines.clear();
-	}
-	if(variables.size() == 0) {
-		return true;
-	}
-blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Start variables loop");
-	for (auto it = variables.begin(); it != variables.end();
-	     ++it, ++currentRow) {
-			blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI new line");
-		QLabel *label = new QLabel(*it);
-		label->setAlignment(Qt::AlignVCenter);
-		mustache->ui->gridLayout->addWidget(label, currentRow, 0);
-		QLineEdit *lineEdit =
-			new QLineEdit(variablesAndValues->getValue(*it));
-		mustache->textLines[*it] = lineEdit;
-		mustache->ui->gridLayout->addWidget(lineEdit, currentRow, 1);
-	}
-
-	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Completed");
-
-	return true;
-}
-
 bool OBSTextMustacheDefinitions::UpdateVariables(void *data, obs_source_t *source) {
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
@@ -175,7 +132,35 @@ bool OBSTextMustacheDefinitions::UpdateVariables(void *data, obs_source_t *sourc
 void OBSTextMustacheDefinitions::UpdateAll()
 {
 	obs_enum_sources(FindVariables, this);
-	obs_enum_sources(UpdateUI, this);
+
+	VariablesAndValues *const variablesAndValues =
+		VariablesAndValues::getInstance();
+
+		blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateAll Triggered");
+
+	ui->gridLayout->setColumnStretch(0, 1);
+	ui->gridLayout->setColumnStretch(1, 2);
+
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateAll GetVariables");
+
+	const auto variables = variablesAndValues->getVariables();
+	int currentRow = 0;
+	textLines.clear();
+
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateAll Start variables loop");
+	for (auto it = variables.begin(); it != variables.end();
+	     ++it, ++currentRow) {
+			blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateAll new line");
+		QLabel *label = new QLabel(*it);
+		label->setAlignment(Qt::AlignVCenter);
+		ui->gridLayout->addWidget(label, currentRow, 0);
+		QLineEdit *lineEdit =
+			new QLineEdit(variablesAndValues->getValue(*it));
+		textLines[*it] = lineEdit;
+		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
+	}
+
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateAll UI Update Completed");
 	obs_enum_sources(UpdateVariables, this);
 	obs_enum_sources(UpdateRenderedText, this);
 }
