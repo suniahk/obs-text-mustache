@@ -89,7 +89,7 @@ bool OBSTextMustacheDefinitions::UpdateRenderedText(void *data, obs_source_t *so
 
 OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	: QWidget(parent),
-	  ui(new Ui::OBSTextMustacheDefinitions)
+	  ui(new Ui_OBSTextMustacheDefinitions)
 {
 	ui->setupUi(this);
 

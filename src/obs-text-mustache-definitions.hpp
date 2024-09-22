@@ -2,6 +2,7 @@
 
 #include <obs-frontend-api.h>
 #include <QString>
+#include <QWidget>
 #include <QDockWidget>
 #include <QLineEdit>
 #include <obs.hpp>
@@ -21,7 +22,7 @@ private slots:
 	void SignalSourceUpdate();
 
 private:
-	std::unique_ptr<Ui::OBSTextMustacheDefinitions> ui;
+	std::unique_ptr<Ui_OBSTextMustacheDefinitions> ui;
 	std::map<QString, QLineEdit *> textLines;
 	static void OBSSignal(void *data, const char *signal,
 			      calldata_t *call_data);
