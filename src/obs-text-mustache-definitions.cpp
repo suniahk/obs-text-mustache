@@ -130,7 +130,7 @@ blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
 	const auto variables = variablesAndValues->getVariables();
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Total Variables: %s", std::to_string(variables.size()));
 	int currentRow = 0;
-	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI textlines clear");
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI textlines clear: %s elements", std::to_string(mustache->textLines.size()));
 	if(mustache->textLines.size() > 0) {
 		mustache->textLines.clear();
 	}
