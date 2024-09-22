@@ -19,6 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-module.h>
 #include <plugin-support.h>
 #include <QMainWindow>
+#include <QWidget>
 #include <QDockWidget>
 #include <QString>
 #include <obs-frontend-api.h>
@@ -34,30 +35,19 @@ OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
 bool obs_module_load()
 {
-	const QMainWindow *window = static_cast<QMainWindow *>(obs_frontend_get_main_window());
+	const auto *window = static_cast<QMainWindow *>(obs_frontend_get_main_window());
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 
-	obs_frontend_pop_ui_translation();
 	auto *obsTextMustache = new OBSTextMustacheDefinitions(window);
 
 	const QString title = QString::fromUtf8(obs_module_text("Text Template Values"));
 	const auto name = "OBSTextMustacheDefinitions";
-#if LIBOBS_API_VER >= MAKE_SEMANTIC_VERSION(30, 0, 0)
-	obs_frontend_add_dock_by_id(name, title.toUtf8().constData(),
-				    tmp);
-#else
-	auto dock = new QDockWidget(main_window);
-	dock->setObjectName(QString::fromUtf8(name));
-	dock->setWindowTitle(title);
-	dock->setWidget(tmp);
-	dock->setFeatures(QDockWidget::DockWidgetMovable |
-			  QDockWidget::DockWidgetFloatable);
-	dock->setFloating(true);
-	dock->hide();
-	obs_frontend_add_dock(dock);
-#endif
 
+	obs_frontend_add_dock_by_id(name, title.toUtf8().constData(),
+				    obsTextMustache);
+
+	obs_frontend_pop_ui_translation();
 	InitOBSText();
 	return true;
 }

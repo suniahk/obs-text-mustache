@@ -2,14 +2,13 @@
 
 #include <obs-frontend-api.h>
 #include <QString>
+#include <QDockWidget>
 #include <QLineEdit>
 #include <obs.hpp>
 #include <memory>
 #include <map>
 
 #include "ui_obs-text-mustache-definitions.h"
-
-class QCloseEvent;
 
 class OBSTextMustacheDefinitions : public QWidget {
 	Q_OBJECT
