@@ -118,7 +118,7 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *data, obs_source_t *source) {
 		VariablesAndValues::getInstance();
 
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Triggered");
-
+	try {
 	//mustache->ui->gridLayout->setColumnStretch(0, 1);
 	//mustache->ui->gridLayout->setColumnStretch(1, 2);
 blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
@@ -140,7 +140,9 @@ blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
 	}
 
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Completed");
-
+	} catch(exception& e) {
+		blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI failed! Error: %s", e.what());
+	}
 	return true;
 }
 
