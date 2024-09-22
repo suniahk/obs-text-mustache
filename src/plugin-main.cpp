@@ -35,6 +35,7 @@ OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
 bool obs_module_load()
 {
+	InitOBSText();
 	blog(LOG_INFO, "obs-text-mustache-definitions loading started");
 	auto *window = (QMainWindow *)obs_frontend_get_main_window();
 
@@ -42,16 +43,14 @@ bool obs_module_load()
 
 	auto *obsTextMustache = new OBSTextMustacheDefinitions(window);
 
-	const QString title = QString::fromUtf8(obs_module_text("Text Template Values"));
-	const auto name = "OBSTextMustache";
+	//const QString title = QString::fromUtf8(obs_module_text("Text Template Values"));
+	const QString title = QString::fromUtf8(obs_module_text("OBSTextMustacheDefinitions"));
+	const auto name = "OBSTextMustacheDefinitions";
 
 	obs_frontend_add_dock_by_id(name, title.toUtf8().constData(),
 				    obsTextMustache);
 
 	obs_frontend_pop_ui_translation();
-	blog(LOG_INFO, "obs-text-mustache-definitions init loading started");
-	InitOBSText();
-	blog(LOG_INFO, "obs-text-mustache-definitions module loading finished");
 	return true;
 }
 
