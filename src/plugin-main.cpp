@@ -57,3 +57,13 @@ void obs_module_unload()
 	FreeOBSText();
 	obs_log(LOG_INFO, "plugin unloaded");
 }
+
+MODULE_EXPORT const char *obs_module_description(void)
+{
+	return "Windows GDI+ text source with templating";
+}
+
+MODULE_EXPORT const char *obs_module_name(void)
+{
+	return obs_module_text("OBSTextMustache");
+}
