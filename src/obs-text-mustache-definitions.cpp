@@ -119,7 +119,7 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
 	mustache->ui->gridLayout->setColumnStretch(1, 2);
 	const auto variables = variablesAndValues->getVariables();
 	int currentRow = 0;
-	textLines.clear();
+	mustache->textLines.clear();
 	for (auto it = variables.begin(); it != variables.end();
 	     ++it, ++currentRow) {
 
@@ -128,7 +128,7 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
 		mustache->ui->gridLayout->addWidget(label, currentRow, 0);
 		QLineEdit *lineEdit =
 			new QLineEdit(variablesAndValues->getValue(*it));
-		textLines[*it] = lineEdit;
+		mustache->textLines[*it] = lineEdit;
 		mustache->ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
 
