@@ -21,7 +21,7 @@ using namespace std;
 
 const wregex variable_regex(L"\\{\\{(\\w+)\\}\\}");
 
-void OBSTextMustacheDefinitions::FindVariables(void *data, obs_source_t *source)
+bool OBSTextMustacheDefinitions::FindVariables(void *data, obs_source_t *source)
 {
 	VariablesAndValues *variablesAndValues =
 		VariablesAndValues::getInstance();
@@ -60,9 +60,11 @@ void OBSTextMustacheDefinitions::FindVariables(void *data, obs_source_t *source)
 			}
 		}
 	}
+
+	return true;
 }
 
-void OBSTextMustacheDefinitions::UpdateText(void *data, obs_source_t *source)
+bool OBSTextMustacheDefinitions::UpdateText(void *data, obs_source_t *source)
 {
 	const char *id = obs_source_get_id(source);
 	if (!strcmp("text_gdiplus_mustache_v2", id)) {
@@ -70,6 +72,8 @@ void OBSTextMustacheDefinitions::UpdateText(void *data, obs_source_t *source)
 			obs_obj_get_data(source));
 		mySource->UpdateTextToRender();
 	}
+
+	return true;
 }
 
 // static void loadVariablesAndValues(obs_data_t *data, void *param)
@@ -107,7 +111,7 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 // 	obs_enum_sources(findVariables, this);
 // }
 
-void OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
+bool OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
 VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 	ui->gridLayout->setColumnStretch(0, 1);
@@ -126,9 +130,11 @@ VariablesAndValues *const variablesAndValues =
 		textLines[*it] = lineEdit;
 		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
+
+	return true;
 }
 
-void OBSTextMustacheDefinitions::UpdateVariables(void *param, obs_source_t *source) {
+bool OBSTextMustacheDefinitions::UpdateVariables(void *param, obs_source_t *source) {
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 	const auto variables = variablesAndValues->getVariables();
@@ -140,6 +146,8 @@ void OBSTextMustacheDefinitions::UpdateVariables(void *param, obs_source_t *sour
 		     variable.toStdString().c_str(),
 		     value.toStdString().c_str());
 	}
+
+	return true;
 }
 
 void OBSTextMustacheDefinitions::UpdateAll()
@@ -252,7 +260,7 @@ void OBSTextMustacheDefinitions::OBSEvent(enum obs_frontend_event event, void *)
 	switch (event) {
 	case OBS_FRONTEND_EVENT_SCENE_CHANGED:
 	case OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED:
-		obs_enum_sources(updateText, NULL);
+		UpdateAll();
 		break;
 	default:
 		break;
