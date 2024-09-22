@@ -20,6 +20,8 @@ void VariablesAndValues::putVariable(const QString &variable)
 	if (variablesAndValues.find(variable) == variablesAndValues.end()) {
 		variablesAndValues[variable] = QString("");
 		variables.insert(variable);
+		blog(LOG_INFO, "VariablesAndValues::putVariable %s init finished",
+	     variable.toStdString().c_str());
 	}
 }
 
