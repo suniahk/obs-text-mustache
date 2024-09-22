@@ -1,8 +1,10 @@
 #pragma once
 
+#include <obs-frontend-api.h>
 #include <QTimer>
 #include <QString>
 #include <QLineEdit>
+#include <obs.hpp>
 #include <memory>
 #include <map>
 

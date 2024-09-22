@@ -36,7 +36,14 @@ if(ENABLE_QT)
 endif()
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE forms/obs-text-mustache-definitions.ui)
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/plugin-main.c src/variables.cpp src/obs-text.cpp
-                                             src/obs-text-mustache-definitions.cpp)
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE 
+                src/plugin-main.c
+                src/variables.cpp
+                src/obs-text.cpp
+                src/obs-text-mustache-definitions.cpp
+                src/variables.hpp
+                src/obs-text.hpp
+                src/obs-text-mustache-definitions.hpp
+)
 
 set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})

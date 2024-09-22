@@ -1,4 +1,3 @@
-#include <obs-frontend-api.h>
 #include <obs-module.h>
 #include <set>
 #include <string>
@@ -6,6 +5,7 @@
 #include <iterator>
 #include <obs.hpp>
 #include <util/util.hpp>
+#include "util/platform.h"
 #include <QAction>
 #include <QMainWindow>
 #include <QDialog>
