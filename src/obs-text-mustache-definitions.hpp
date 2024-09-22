@@ -16,22 +16,20 @@ class OBSTextMustacheDefinitions : public QDialog {
 	Q_OBJECT
 
 public:
-	std::unique_ptr<Ui_OBSTextMustacheDefinitions> ui;
-	OBSTextMustacheDefinitions(QWidget *parent);
+	OBSTextMustacheDefinitions(QWidget *parent = nullptr);
 	~OBSTextMustacheDefinitions();
 
-	void closeEvent(QCloseEvent *event) override;
-
-public slots:
-	void UpdateVariablesAndValues();
+private slots:
 	void UpdateUI();
+	static void OBSSignal(void *data, const char *signal,
+			      calldata_t *call_data);
+	static void OBSEvent(enum obs_frontend_event event, void *);
+
+private:
+	std::unique_ptr<Ui_OBSTextMustacheDefinitions> ui;
+	std::map<QString, QLineEdit *> textLines;
 	void UpdateVariables();
 	void ShowDialog();
 	void HideDialog();
-	void OBSSignal(void *data, const char *signal,
-			      calldata_t *call_data);
-	void OBSEvent(enum obs_frontend_event event, void *);
-
-private:
-	std::map<QString, QLineEdit *> textLines;
+	void UpdateVariablesAndValues();
 };

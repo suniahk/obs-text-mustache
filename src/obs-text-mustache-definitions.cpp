@@ -98,6 +98,16 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	signal_handler_connect_global(obs_get_signal_handler(), OBSSignal,
 				      this);
 
+	QAction *const action = (QAction *)obs_frontend_add_tools_menu_qaction(
+		obs_module_text("TextGDIPlusDefinitions"));
+
+	const auto cb = []() {
+		ShowDialog();
+	};
+
+
+	action->connect(action, &QAction::triggered, cb);
+
 	QObject::connect(ui->buttonBox->button(QDialogButtonBox::Close),
 			 &QPushButton::clicked, this,
 			 &OBSTextMustacheDefinitions::hide);
@@ -106,10 +116,10 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 			 &OBSTextMustacheDefinitions::HideDialog);
 }
 
-void OBSTextMustacheDefinitions::closeEvent(QCloseEvent *)
-{
-	//obs_frontend_save();
-}
+// void OBSTextMustacheDefinitions::closeEvent(QCloseEvent *)
+// {
+// 	//obs_frontend_save();
+// }
 
 void OBSTextMustacheDefinitions::UpdateVariablesAndValues() {
 	obs_enum_sources(findVariables, NULL);
@@ -284,20 +294,12 @@ OBSTextMustacheDefinitions::~OBSTextMustacheDefinitions() {
 
 extern "C" void InitOBSTextMustacheDefinitions()
 {
-	QAction *const action = (QAction *)obs_frontend_add_tools_menu_qaction(
-		obs_module_text("TextGDIPlusDefinitions"));
+	
 
 	const QMainWindow *window = static_cast<QMainWindow *>(obs_frontend_get_main_window());
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 
-	auto *obsTextMustache = new OBSTextMustacheDefinitions(window);
-
-	const auto cb = []() {
-		obsTextMustache->ShowDialog();
-	};
-
 	obs_frontend_pop_ui_translation();
-
-	action->connect(action, &QAction::triggered, cb);
+	auto *obsTextMustache = new OBSTextMustacheDefinitions(window);
 }
