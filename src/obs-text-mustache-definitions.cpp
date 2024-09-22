@@ -119,8 +119,8 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *data, obs_source_t *source) {
 
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Triggered");
 
-	mustache->ui->gridLayout->setColumnStretch(0, 1);
-	mustache->ui->gridLayout->setColumnStretch(1, 2);
+	//mustache->ui->gridLayout->setColumnStretch(0, 1);
+	//mustache->ui->gridLayout->setColumnStretch(1, 2);
 blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
 	const auto variables = variablesAndValues->getVariables();
 	int currentRow = 0;
