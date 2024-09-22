@@ -18,16 +18,15 @@ public:
 	~OBSTextMustacheDefinitions();
 
 private slots:
-	void UpdateUI();
 	static void OBSSignal(void *data, const char *signal,
 			      calldata_t *call_data);
 	static void OBSEvent(enum obs_frontend_event event, void *);
+	static bool UpdateUI(void *param, obs_source_t *source);
 
 private:
 	std::unique_ptr<Ui_OBSTextMustacheDefinitions> ui;
 	std::map<QString, QLineEdit *> textLines;
 	static bool FindVariables(void *data, obs_source_t *source);
-	static bool UpdateUI(void *param, obs_source_t *source);
 	static bool UpdateVariables(void *param, obs_source_t *source);
 	static bool UpdateText(void *data, obs_source_t *source);
 	void UpdateAll();
