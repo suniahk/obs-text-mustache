@@ -1,22 +1,23 @@
-#include <obs-module.h>
+#include "obs-text-mustache-definitions.hpp"
+
 #include <set>
+#include <map>
 #include <string>
 #include <regex>
 #include <iterator>
-#include <obs.hpp>
-#include <util/util.hpp>
+
+#include <obs-module.h>
+#include <QMainWindow>
 #include <util/platform.h>
-#include <QAction>
 #include <QWidget>
-#include <QTimer>
 #include <QObject>
-#include <QPushButton>
 #include <QString>
 #include <QLabel>
 #include <QLineEdit>
-#include "obs-text-mustache-definitions.hpp"
 #include "obs-text.hpp"
 #include "variables.hpp"
+
+#include "ui_OBSTextMustacheDefinitions.h"
 
 using namespace std;
 
@@ -166,6 +167,7 @@ void OBSTextMustacheDefinitions::UpdateAll()
 }
 
 void OBSTextMustacheDefinitions::SignalSourceUpdate() {
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::SignalSourceUpdate called");
 	UpdateAll();
 }
 
@@ -199,6 +201,12 @@ void OBSTextMustacheDefinitions::OBSSignal(void *data, const char *signal,
 		static_cast<obs_source_t *>(calldata_ptr(call_data, "source"));
 	if (!source)
 		return;
+
+	const char *id = obs_source_get_id(source);
+
+	if(obs_source_removed(source) || strcmp("text_gdiplus_mustache_v2", id)) {
+		return;
+	}
 
 	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(data);
 	QMetaObject::invokeMethod(mustache, "SignalSourceUpdate",
