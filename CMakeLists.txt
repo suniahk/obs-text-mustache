@@ -43,7 +43,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
                 src/variables.hpp
                 src/obs-text.hpp
                 src/obs-text-mustache-definitions.hpp
-                forms/obs-text-mustache-definitions.ui
+                forms/OBSTextMustacheDefinitions.ui
 )
 
 set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
