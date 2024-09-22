@@ -169,6 +169,10 @@ void OBSTextMustacheDefinitions::UpdateAll()
 	obs_enum_sources(UpdateText, this);
 }
 
+void OBSTextMustacheDefinitions::SignalSourceUpdate() {
+	UpdateAll();
+}
+
 // void OBSTextMustacheDefinitions::ShowDialog()
 // {
 // 	UpdateUI();
@@ -200,8 +204,8 @@ void OBSTextMustacheDefinitions::OBSSignal(void *data, const char *signal,
 	if (!source)
 		return;
 
-	OBSTextMustacheDefinitions *obsTextMustache = static_cast<OBSTextMustacheDefinitions *>(data);
-	QMetaObject::invokeMethod(obsTextMustache, "UpdateAll",
+	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(data);
+	QMetaObject::invokeMethod(mustache, "SignalSourceUpdate",
 				  Qt::QueuedConnection);
 }
 

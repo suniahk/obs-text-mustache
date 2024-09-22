@@ -18,7 +18,7 @@ public:
 	~OBSTextMustacheDefinitions();
 
 private slots:
-	void UpdateAll();
+	void SignalSourceUpdate();
 
 private:
 	std::unique_ptr<Ui::OBSTextMustacheDefinitions> ui;
@@ -30,5 +30,6 @@ private:
 	static bool FindVariables(void *data, obs_source_t *source);
 	static bool UpdateVariables(void *data, obs_source_t *source);
 	static bool UpdateText(void *data, obs_source_t *source);
+	void UpdateAll();
 	//void UpdateVariablesAndValues();
 };
