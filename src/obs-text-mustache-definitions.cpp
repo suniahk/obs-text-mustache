@@ -114,19 +114,25 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 bool OBSTextMustacheDefinitions::UpdateUI(void *data, obs_source_t *source) {
 	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(data);
 
+	if(obs_source_removed(source)) {
+		return;
+	}
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Triggered");
-	try {
+
 	//mustache->ui->gridLayout->setColumnStretch(0, 1);
 	//mustache->ui->gridLayout->setColumnStretch(1, 2);
 blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
 	const auto variables = variablesAndValues->getVariables();
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Total Variables: %s". variables.count());
 	int currentRow = 0;
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI textlines clear");
-	mustache->textLines.clear();
-
+	if(mustache->textLines.count() > 0) {
+		mustache->textLines.clear();
+	}
+blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Start variables loop");
 	for (auto it = variables.begin(); it != variables.end();
 	     ++it, ++currentRow) {
 			blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI new line");
@@ -140,9 +146,7 @@ blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
 	}
 
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Completed");
-	} catch(exception& e) {
-		blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI failed! Error: %s", e.what());
-	}
+
 	return true;
 }
 
