@@ -64,7 +64,7 @@ bool OBSTextMustacheDefinitions::FindVariables(void *data, obs_source_t *source)
 	return true;
 }
 
-bool OBSTextMustacheDefinitions::UpdateText(void *data, obs_source_t *source)
+bool OBSTextMustacheDefinitions::UpdateRenderedText(void *data, obs_source_t *source)
 {
 	const char *id = obs_source_get_id(source);
 	if (!strcmp("text_gdiplus_mustache_v2", id)) {
@@ -127,11 +127,14 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *data, obs_source_t *source) {
 	//mustache->ui->gridLayout->setColumnStretch(1, 2);
 blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
 	const auto variables = variablesAndValues->getVariables();
-	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Total Variables: %s", variables.size());
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Total Variables: %s", variables.size().toStdString().c_str());
 	int currentRow = 0;
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI textlines clear");
 	if(mustache->textLines.size() > 0) {
 		mustache->textLines.clear();
+	}
+	if(variables.size() == 0) {
+		return true;
 	}
 blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Start variables loop");
 	for (auto it = variables.begin(); it != variables.end();
@@ -173,7 +176,7 @@ void OBSTextMustacheDefinitions::UpdateAll()
 	obs_enum_sources(FindVariables, this);
 	obs_enum_sources(UpdateUI, this);
 	obs_enum_sources(UpdateVariables, this);
-	obs_enum_sources(UpdateText, this);
+	obs_enum_sources(UpdateRenderedText, this);
 }
 
 void OBSTextMustacheDefinitions::SignalSourceUpdate() {

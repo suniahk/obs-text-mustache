@@ -29,7 +29,7 @@ private:
 	static bool UpdateUI(void *data, obs_source_t *source);
 	static bool FindVariables(void *data, obs_source_t *source);
 	static bool UpdateVariables(void *data, obs_source_t *source);
-	static bool UpdateText(void *data, obs_source_t *source);
+	static bool UpdateRenderedText(void *data, obs_source_t *source);
 	void UpdateAll();
 	//void UpdateVariablesAndValues();
 };
