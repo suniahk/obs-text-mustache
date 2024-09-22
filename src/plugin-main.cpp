@@ -35,14 +35,14 @@ OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
 bool obs_module_load()
 {
-	const auto *window = static_cast<QMainWindow *>(obs_frontend_get_main_window());
+	auto *window = (QMainWindow *)obs_frontend_get_main_window();
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 
 	auto *obsTextMustache = new OBSTextMustacheDefinitions(window);
 
 	const QString title = QString::fromUtf8(obs_module_text("Text Template Values"));
-	const auto name = "OBSTextMustacheDefinitions";
+	const auto name = "OBSTextMustache";
 
 	obs_frontend_add_dock_by_id(name, title.toUtf8().constData(),
 				    obsTextMustache);
