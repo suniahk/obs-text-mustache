@@ -37,7 +37,7 @@ endif()
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE forms/obs-text-mustache-definitions.ui)
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE 
-                src/plugin-main.c
+                src/plugin-main.cpp
                 src/variables.cpp
                 src/obs-text.cpp
                 src/obs-text-mustache-definitions.cpp

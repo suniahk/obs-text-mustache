@@ -3,11 +3,7 @@
 #include <string>
 #include <regex>
 #include <iterator>
-#include <obs.hpp>
-#include <util/util.hpp>
-#include "util/platform.h"
 #include <QAction>
-#include <QMainWindow>
 #include <QWidget>
 #include <QTimer>
 #include <QObject>
@@ -15,8 +11,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include "obs-text-mustache-definitions.hpp"
-#include "obs-text.hpp"
-#include "variables.hpp"
 
 using namespace std;
 
@@ -91,22 +85,14 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 {
 	ui->setupUi(this);
 
-	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+	//setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
 	obs_frontend_add_event_callback(OBSEvent, nullptr);
 
 	signal_handler_connect_global(obs_get_signal_handler(), OBSSignal,
 				      this);
 
-	QAction *const action = (QAction *)obs_frontend_add_tools_menu_qaction(
-		obs_module_text("TextGDIPlusDefinitions"));
-
-	const auto cb = []() {
-		ShowDialog();
-	};
-
-
-	action->connect(action, &QAction::triggered, cb);
+	hide();
 }
 
 // void OBSTextMustacheDefinitions::closeEvent(QCloseEvent *)
@@ -283,16 +269,4 @@ void OBSTextMustacheDefinitions::OBSEvent(enum obs_frontend_event event, void *)
 OBSTextMustacheDefinitions::~OBSTextMustacheDefinitions() {
 	signal_handler_disconnect_global(obs_get_signal_handler(), OBSSignal,
 					 this);
-}
-
-extern "C" void InitOBSTextMustacheDefinitions()
-{
-	
-
-	const QMainWindow *window = static_cast<QMainWindow *>(obs_frontend_get_main_window());
-
-	obs_frontend_push_ui_translation(obs_module_get_string);
-
-	obs_frontend_pop_ui_translation();
-	auto *obsTextMustache = new OBSTextMustacheDefinitions(window);
 }
