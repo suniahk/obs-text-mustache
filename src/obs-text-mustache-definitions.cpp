@@ -253,14 +253,16 @@ void OBSTextMustacheDefinitions::OBSSignal(void *data, const char *signal,
 // 	}
 // }
 
-void OBSTextMustacheDefinitions::OBSEvent(enum obs_frontend_event event, void *)
+void OBSTextMustacheDefinitions::OBSEvent(enum obs_frontend_event event, void *ptr)
 {
+	OBSTextMustacheDefinitions *mustache = reinterpret_cast<OBSTextMustacheDefinitions *>(ptr);
+
 	blog(LOG_DEBUG, "OBSEvent: %d", event);
 
 	switch (event) {
 	case OBS_FRONTEND_EVENT_SCENE_CHANGED:
 	case OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED:
-		UpdateAll();
+		mustache->UpdateAll();
 		break;
 	default:
 		break;
