@@ -112,30 +112,29 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 // }
 
 bool OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
-	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(param);
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Triggered");
 
-	mustache->ui->gridLayout->setColumnStretch(0, 1);
-	mustache->ui->gridLayout->setColumnStretch(1, 2);
+	ui->gridLayout->setColumnStretch(0, 1);
+	ui->gridLayout->setColumnStretch(1, 2);
 blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
 	const auto variables = variablesAndValues->getVariables();
 	int currentRow = 0;
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI textlines clear");
-	mustache->textLines.clear();
+	textLines.clear();
 
 	for (auto it = variables.begin(); it != variables.end();
 	     ++it, ++currentRow) {
 			blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI new line");
 		QLabel *label = new QLabel(*it);
 		label->setAlignment(Qt::AlignVCenter);
-		mustache->ui->gridLayout->addWidget(label, currentRow, 0);
+		ui->gridLayout->addWidget(label, currentRow, 0);
 		QLineEdit *lineEdit =
 			new QLineEdit(variablesAndValues->getValue(*it));
-		mustache->textLines[*it] = lineEdit;
-		mustache->ui->gridLayout->addWidget(lineEdit, currentRow, 1);
+		textLines[*it] = lineEdit;
+		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
 
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Completed");
