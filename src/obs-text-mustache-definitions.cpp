@@ -112,10 +112,11 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 // }
 
 bool OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
-VariablesAndValues *const variablesAndValues =
+	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(param);
+	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
-	ui->gridLayout->setColumnStretch(0, 1);
-	ui->gridLayout->setColumnStretch(1, 2);
+	mustache->ui->gridLayout->setColumnStretch(0, 1);
+	mustache->ui->gridLayout->setColumnStretch(1, 2);
 	const auto variables = variablesAndValues->getVariables();
 	int currentRow = 0;
 	textLines.clear();
@@ -124,11 +125,11 @@ VariablesAndValues *const variablesAndValues =
 
 		QLabel *label = new QLabel(*it);
 		label->setAlignment(Qt::AlignVCenter);
-		ui->gridLayout->addWidget(label, currentRow, 0);
+		mustache->ui->gridLayout->addWidget(label, currentRow, 0);
 		QLineEdit *lineEdit =
 			new QLineEdit(variablesAndValues->getValue(*it));
 		textLines[*it] = lineEdit;
-		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
+		mustache->ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
 
 	return true;
