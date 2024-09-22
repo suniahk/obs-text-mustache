@@ -26,8 +26,8 @@ private slots:
 private:
 	std::unique_ptr<Ui_OBSTextMustacheDefinitions> ui;
 	std::map<QString, QLineEdit *> textLines;
-	void UpdateVariables();
-	void ShowDialog();
-	void HideDialog();
-	void UpdateVariablesAndValues();
+	void UpdateUI(void *param, obs_source_t *source);
+	void UpdateVariables(void *param, obs_source_t *source);
+	void UpdateAll();
+	//void UpdateVariablesAndValues();
 };

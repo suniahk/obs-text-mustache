@@ -105,11 +105,11 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 // 	//obs_frontend_save();
 // }
 
-void OBSTextMustacheDefinitions::UpdateVariablesAndValues() {
-	obs_enum_sources(findVariables, NULL);
-}
+// void OBSTextMustacheDefinitions::UpdateVariablesAndValues() {
+// 	obs_enum_sources(findVariables, this);
+// }
 
-void OBSTextMustacheDefinitions::UpdateUI() {
+void OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
 VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 	ui->gridLayout->setColumnStretch(0, 1);
@@ -130,7 +130,7 @@ VariablesAndValues *const variablesAndValues =
 	}
 }
 
-void OBSTextMustacheDefinitions::UpdateVariables() {
+void OBSTextMustacheDefinitions::UpdateVariables(void *param, obs_source_t *source) {
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 	const auto variables = variablesAndValues->getVariables();
@@ -144,22 +144,28 @@ void OBSTextMustacheDefinitions::UpdateVariables() {
 	}
 }
 
-void OBSTextMustacheDefinitions::ShowDialog()
+void OBSTextMustacheDefinitions::UpdateAll()
 {
-	UpdateUI();
-	setVisible(true);
-	//QTimer::singleShot(250, this, &OBSTextMustacheDefinitions::show);
+	obs_enum_sources(findVariables, this);
+	obs_enum_sources(UpdateUI, this);
+	obs_enum_sources(updateText, this);
 }
 
-void OBSTextMustacheDefinitions::HideDialog()
-{
-	setVisible(false);
-	UpdateVariables();
+// void OBSTextMustacheDefinitions::ShowDialog()
+// {
+// 	UpdateUI();
+// 	setVisible(true);
+// 	//QTimer::singleShot(250, this, &OBSTextMustacheDefinitions::show);
+// }
+
+// void OBSTextMustacheDefinitions::HideDialog()
+// {
+// 	setVisible(false);
+// 	UpdateVariables();
 	
-	obs_enum_sources(updateText, NULL);
 
-	QTimer::singleShot(250, this, &OBSTextMustacheDefinitions::hide);
-}
+// 	QTimer::singleShot(250, this, &OBSTextMustacheDefinitions::hide);
+// }
 
 // void OBSTextMustacheDefinitions::TimerTextUpdate()
 // {
@@ -177,7 +183,7 @@ void OBSTextMustacheDefinitions::OBSSignal(void *data, const char *signal,
 		return;
 
 	OBSTextMustacheDefinitions *obsTextMustache = static_cast<OBSTextMustacheDefinitions *>(data);
-	QMetaObject::invokeMethod(obsTextMustache, "UpdateVariablesAndValues",
+	QMetaObject::invokeMethod(obsTextMustache, "UpdateAll",
 				  Qt::QueuedConnection);
 }
 
