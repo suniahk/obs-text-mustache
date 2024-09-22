@@ -35,6 +35,7 @@ OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
 bool obs_module_load()
 {
+	blog(LOG_INFO, "obs-text-mustache-definitions loading started");
 	auto *window = (QMainWindow *)obs_frontend_get_main_window();
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
@@ -48,7 +49,9 @@ bool obs_module_load()
 				    obsTextMustache);
 
 	obs_frontend_pop_ui_translation();
+	blog(LOG_INFO, "obs-text-mustache-definitions init loading started");
 	InitOBSText();
+	blog(LOG_INFO, "obs-text-mustache-definitions module loading finished");
 	return true;
 }
 

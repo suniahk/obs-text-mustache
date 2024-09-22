@@ -116,6 +116,8 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Triggered");
+
 	mustache->ui->gridLayout->setColumnStretch(0, 1);
 	mustache->ui->gridLayout->setColumnStretch(1, 2);
 
@@ -134,6 +136,8 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
 		mustache->textLines[*it] = lineEdit;
 		mustache->ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
+
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Completed");
 
 	return true;
 }
