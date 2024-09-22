@@ -115,11 +115,14 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *param, obs_source_t *source) {
 	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(param);
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
+
 	mustache->ui->gridLayout->setColumnStretch(0, 1);
 	mustache->ui->gridLayout->setColumnStretch(1, 2);
+
 	const auto variables = variablesAndValues->getVariables();
 	int currentRow = 0;
 	mustache->textLines.clear();
+
 	for (auto it = variables.begin(); it != variables.end();
 	     ++it, ++currentRow) {
 
@@ -154,8 +157,8 @@ bool OBSTextMustacheDefinitions::UpdateVariables(void *param, obs_source_t *sour
 void OBSTextMustacheDefinitions::UpdateAll()
 {
 	obs_enum_sources(FindVariables, this);
-	obs_enum_sources(UpdateVariables, this);
 	obs_enum_sources(UpdateUI, this);
+	obs_enum_sources(UpdateVariables, this);
 	obs_enum_sources(UpdateText, this);
 }
 
