@@ -93,6 +93,7 @@ wstring replaceDateTimes(const wstring &initial)
 	wstring text_to_render = initial;
 	time_t currentTime = time(nullptr);
 	struct tm *localTime = localtime(&currentTime);
+	// Note: Can't this just formatted using strftime?
 
 	text_to_render = regex_replace(text_to_render,
 				       wregex(L"\\{\\{DateTime month\\}\\}"),
