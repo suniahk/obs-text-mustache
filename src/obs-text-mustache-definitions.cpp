@@ -138,7 +138,7 @@ void OBSTextMustacheDefinitions::UpdateVariables(void *param, obs_source_t *sour
 		const auto variable = *it;
 		const auto value = textLines[*it]->text();
 		variablesAndValues->putValue(variable, value);
-		blog(LOG_DEBUG, "HideDialog: Setting variable %s to %s",
+		blog(LOG_DEBUG, "UpdateVariables: Setting variable %s to %s",
 		     variable.toStdString().c_str(),
 		     value.toStdString().c_str());
 	}
@@ -147,6 +147,7 @@ void OBSTextMustacheDefinitions::UpdateVariables(void *param, obs_source_t *sour
 void OBSTextMustacheDefinitions::UpdateAll()
 {
 	obs_enum_sources(findVariables, this);
+	obs_enum_sources(UpdateVariables, this);
 	obs_enum_sources(UpdateUI, this);
 	obs_enum_sources(updateText, this);
 }
