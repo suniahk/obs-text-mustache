@@ -115,7 +115,7 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *data, obs_source_t *source) {
 	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(data);
 
 	if(obs_source_removed(source)) {
-		return;
+		return true;
 	}
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
@@ -126,10 +126,10 @@ bool OBSTextMustacheDefinitions::UpdateUI(void *data, obs_source_t *source) {
 	//mustache->ui->gridLayout->setColumnStretch(1, 2);
 blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI GetVariables");
 	const auto variables = variablesAndValues->getVariables();
-	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Total Variables: %s". variables.count());
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Total Variables: %s", variables.size());
 	int currentRow = 0;
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI textlines clear");
-	if(mustache->textLines.count() > 0) {
+	if(mustache->textLines.size() > 0) {
 		mustache->textLines.clear();
 	}
 blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Start variables loop");
