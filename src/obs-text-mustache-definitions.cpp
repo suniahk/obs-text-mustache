@@ -98,7 +98,7 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 		VariablesAndValues::getInstance();
 		
 
-	obs_frontend_add_save_callback(VariablesAndValues::store, variablesAndValues);
+	obs_frontend_add_save_callback(VariablesAndValues::storeVariables, variablesAndValues);
 	obs_frontend_add_event_callback(OBSEvent, this);
 
 	signal_handler_connect_global(obs_get_signal_handler(), OBSSignal,

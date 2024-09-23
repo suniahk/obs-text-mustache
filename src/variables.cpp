@@ -58,7 +58,7 @@ void VariablesAndValues::clear()
 	variables.clear();
 }
 
-static void VariablesAndValues::loadVariables(obs_data_t *data, void *param)
+void VariablesAndValues::loadVariables(obs_data_t *data, void *param)
 {
 	VariablesAndValues *variablesAndValues = static_cast<VariablesAndValues *>(param);
 
@@ -70,7 +70,7 @@ static void VariablesAndValues::loadVariables(obs_data_t *data, void *param)
 				     obs_data_get_string(data, "value"));
 }
 
-static void VariablesAndValues::storeVariables(obs_data_t *save_data, bool saving,
+void VariablesAndValues::storeVariables(obs_data_t *save_data, bool saving,
 					   void *ptr)
 {
 	VariablesAndValues *variablesAndValues = static_cast<VariablesAndValues *>(ptr);
@@ -126,6 +126,6 @@ static void VariablesAndValues::storeVariables(obs_data_t *save_data, bool savin
 		variablesAndValues->clear();
 		obs_data_array_enum(obs_data_get_array(obj,
 						       "variablesAndValues"),
-				    load, this);
+				    loadVariables, this);
 	}
 }
