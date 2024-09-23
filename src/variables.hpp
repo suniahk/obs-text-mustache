@@ -2,13 +2,15 @@
 #include <set>
 #include <QString>
 #include <vector>
+#include <obs-frontend-api.h>
+#include <obs.hpp>
 
 class VariablesAndValues {
 public:
 	static VariablesAndValues *getInstance();
-	static void store(obs_data_t *save_data, bool saving,
+	static void storeVariables(obs_data_t *save_data, bool saving,
 					   void *ptr);
-	static void load(obs_data_t *data, void *param);
+	static void loadVariables(obs_data_t *data, void *param);
 	void clear();
 	void putVariable(const QString &variable);
 	void putValue(const QString &variable, const QString &value);

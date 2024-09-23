@@ -1,3 +1,5 @@
+#include <obs-module.h>
+#include <util/platform.h>
 #include <util/util.hpp>
 #include "variables.hpp"
 
@@ -56,7 +58,7 @@ void VariablesAndValues::clear()
 	variables.clear();
 }
 
-static void VariablesAndValues::load(obs_data_t *data, void *param)
+static void VariablesAndValues::loadVariables(obs_data_t *data, void *param)
 {
 	VariablesAndValues *variablesAndValues = static_cast<VariablesAndValues *>(param);
 
@@ -68,7 +70,7 @@ static void VariablesAndValues::load(obs_data_t *data, void *param)
 				     obs_data_get_string(data, "value"));
 }
 
-static void VariablesAndValues::store(obs_data_t *save_data, bool saving,
+static void VariablesAndValues::storeVariables(obs_data_t *save_data, bool saving,
 					   void *ptr)
 {
 	VariablesAndValues *variablesAndValues = static_cast<VariablesAndValues *>(ptr);
