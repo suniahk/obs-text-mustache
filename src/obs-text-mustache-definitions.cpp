@@ -143,27 +143,6 @@ void OBSTextMustacheDefinitions::UpdateAll()
 	int currentRow = 0;
 	//textLines.clear();
 
-	for (auto line = textLines.begin(); line != textLines.end();
-	     ++line, ++currentRow) {
-			if(!variables.count(*line->first)) 
-			{
-				auto *label = ui->gridLayout->itemAtPosition(currentRow, 0);
-				QWidget *labelWidget = label->widget();
-				ui->gridLayout->removeItem(labelWidget);
-				labelWidget->deleteLater();
-				auto *field = ui->gridLayout->itemAtPosition(currentRow, 1);
-				QWidget *fieldWidget = field->widget();
-				ui->gridLayout->removeItem(fieldWidget);
-				fieldWidget->deleteLater();
-
-				textLines.erase(*line->first);
-
-				currentRow--;
-			}
-
-		 }
-
-	currentRow = 0;
 	for (auto it = variables.begin(); it != variables.end();
 	     ++it, ++currentRow) {
 		if(textLines.count(*it)) {
