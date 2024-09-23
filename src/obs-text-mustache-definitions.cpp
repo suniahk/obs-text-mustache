@@ -95,13 +95,13 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	ui->setupUi(this);
 
 	blog(LOG_INFO, "OBSTextMustacheDefinitions Constructor Initialized");
-	if(ui == null) {
+	if(ui == NULL) {
 		blog(LOG_INFO, "OBSTextMustacheDefinitions::Ui is null");
 	}
 
 	//setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-	obs_frontend_add_event_callback(OBSEvent, nullptr);
+	obs_frontend_add_event_callback(OBSEvent, this);
 
 	signal_handler_connect_global(obs_get_signal_handler(), OBSSignal,
 				      this);
