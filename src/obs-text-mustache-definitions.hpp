@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QDockWidget>
 #include <QLineEdit>
+#include <QLabel>
 #include <obs.hpp>
 #include <memory>
 #include <map>
