@@ -126,6 +126,6 @@ void VariablesAndValues::storeVariables(obs_data_t *save_data, bool saving,
 		variablesAndValues->clear();
 		obs_data_array_enum(obs_data_get_array(obj,
 						       "variablesAndValues"),
-				    loadVariables, this);
+				    loadVariables, variablesAndValues);
 	}
 }
