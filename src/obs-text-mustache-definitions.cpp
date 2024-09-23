@@ -94,6 +94,11 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 {
 	ui->setupUi(this);
 
+	blog(LOG_INFO, "OBSTextMustacheDefinitions Constructor Initialized");
+	if(ui == null) {
+		blog(LOG_INFO, "OBSTextMustacheDefinitions::Ui is null");
+	}
+
 	//setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
 	obs_frontend_add_event_callback(OBSEvent, nullptr);
@@ -277,6 +282,8 @@ void OBSTextMustacheDefinitions::OBSEvent(enum obs_frontend_event event, void *p
 	OBSTextMustacheDefinitions *mustache = reinterpret_cast<OBSTextMustacheDefinitions *>(ptr);
 
 	blog(LOG_DEBUG, "OBSEvent: %d", event);
+
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::OBSEvent called");
 
 	switch (event) {
 	case OBS_FRONTEND_EVENT_SCENE_CHANGED:
