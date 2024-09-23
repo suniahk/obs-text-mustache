@@ -55,3 +55,75 @@ void VariablesAndValues::clear()
 	variablesAndValues.clear();
 	variables.clear();
 }
+
+static void VariablesAndValues::load(obs_data_t *data, void *param)
+{
+	VariablesAndValues *variablesAndValues = static_cast<VariablesAndValues *>(param);
+
+	blog(LOG_DEBUG,
+		     "VariablesAndValues::load: loading variables");
+	const auto variables = variablesAndValues->getVariables();
+
+	variablesAndValues->putValue(obs_data_get_string(data, "variable"),
+				     obs_data_get_string(data, "value"));
+}
+
+static void VariablesAndValues::store(obs_data_t *save_data, bool saving,
+					   void *ptr)
+{
+	VariablesAndValues *variablesAndValues = static_cast<VariablesAndValues *>(ptr);
+
+	if (saving) {
+		const OBSDataAutoRelease obj = obs_data_create();
+		const OBSDataArrayAutoRelease array = obs_data_array_create();
+		const auto variables = variablesAndValues->getVariables();
+		for (auto it = variables.begin(); it != variables.end(); ++it) {
+			const QString variable = *it;
+			const QString value = variablesAndValues->getValue(*it);
+			blog(LOG_DEBUG,
+			     "VariablesAndValues::store: Considering saving variable %s",
+			     variable.toStdString().c_str());
+			if (value.size() > 0) {
+				const OBSDataAutoRelease keyValue =
+					obs_data_create();
+				blog(LOG_DEBUG,
+				     "VariablesAndValues::store: Saving variable %s as %s",
+				     variable.toStdString().c_str(),
+				     value.toStdString().c_str());
+
+				obs_data_set_string(
+					keyValue, "variable",
+					variable.toStdString().c_str());
+				obs_data_set_string(
+					keyValue, "value",
+					value.toStdString().c_str());
+
+				obs_data_array_push_back(array, keyValue);
+
+				blog(LOG_DEBUG,
+				     "VariablesAndValues::store: Done saving variable %s as %s",
+				     variable.toStdString().c_str(),
+				     value.toStdString().c_str());
+			}
+		}
+
+		obs_data_set_array(obj, "variablesAndValues", array);
+		blog(LOG_DEBUG,
+		     "VariablesAndValues::store: About to save data");
+		obs_data_set_obj(save_data, "obs-text-mustache", obj);
+		// variablesAndValues->clear();
+		blog(LOG_DEBUG,
+		     "VariablesAndValues::store: Done saving data");
+	} else {
+		OBSDataAutoRelease obj =
+			obs_data_get_obj(save_data, "obs-text-mustache");
+
+		if (!obj)
+			obj = obs_data_create();
+		
+		variablesAndValues->clear();
+		obs_data_array_enum(obs_data_get_array(obj,
+						       "variablesAndValues"),
+				    load, this);
+	}
+}

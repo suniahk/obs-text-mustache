@@ -6,6 +6,9 @@
 class VariablesAndValues {
 public:
 	static VariablesAndValues *getInstance();
+	static void store(obs_data_t *save_data, bool saving,
+					   void *ptr);
+	static void load(obs_data_t *data, void *param);
 	void clear();
 	void putVariable(const QString &variable);
 	void putValue(const QString &variable, const QString &value);
