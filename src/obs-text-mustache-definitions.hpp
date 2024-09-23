@@ -24,6 +24,7 @@ class OBSTextMustacheDefinitions : public QWidget {
 		void UpdateAll();
 		std::unique_ptr<Ui_OBSTextMustacheDefinitions> ui;
 		std::map<QString, QLineEdit *> textLines;
+		std::map<QString, QLabel *> textLabels;
 
 	private slots:
 		void SignalSourceUpdate();

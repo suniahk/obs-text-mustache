@@ -141,15 +141,40 @@ void OBSTextMustacheDefinitions::UpdateAll()
 
 	const auto variables = variablesAndValues->getVariables();
 	int currentRow = 0;
-	textLines.clear();
+	//textLines.clear();
 
+	for (auto line = textLines.begin(); line != textLines.end();
+	     ++line, ++currentRow) {
+			if(!variables.count(*line->first)) 
+			{
+				auto *label = ui->gridLayout->itemAtPosition(currentRow, 0);
+				QWidget *labelWidget = label->widget();
+				ui->gridLayout->removeItem(labelWidget);
+				labelWidget->deleteLater();
+				auto *field = ui->gridLayout->itemAtPosition(currentRow, 1);
+				QWidget *fieldWidget = field->widget();
+				ui->gridLayout->removeItem(fieldWidget);
+				fieldWidget->deleteLater();
+
+				textLines.erase(*line->first);
+
+				currentRow--;
+			}
+
+		 }
+
+	currentRow = 0;
 	for (auto it = variables.begin(); it != variables.end();
 	     ++it, ++currentRow) {
+		if(textLines.count(*it)) {
+			continue;
+		}
 		QLabel *label = new QLabel(*it);
 		label->setAlignment(Qt::AlignVCenter);
 		ui->gridLayout->addWidget(label, currentRow, 0);
 		QLineEdit *lineEdit =
 			new QLineEdit(variablesAndValues->getValue(*it));
+		QObject::connect(lineEdit, &QLineEdit::textChanged, this, [=](QString obj) { variablesAndValues->putValue(*it, obj); });
 		textLines[*it] = lineEdit;
 		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
