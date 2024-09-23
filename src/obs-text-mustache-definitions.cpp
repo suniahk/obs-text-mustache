@@ -114,10 +114,6 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 // 	//obs_frontend_save();
 // }
 
-// void OBSTextMustacheDefinitions::UpdateVariablesAndValues() {
-// 	obs_enum_sources(findVariables, this);
-// }
-
 bool OBSTextMustacheDefinitions::UpdateVariables(void *data, obs_source_t *source) {
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();

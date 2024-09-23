@@ -26,9 +26,6 @@
 				<property name="frameShadow">
 					<enum>QFrame::Sunken</enum>
 				</property>
-				<property name="verticalScrollBarPolicy">
-					<enum>Qt::ScrollBarAlwaysOn</enum>
-				</property>
 				<property name="horizontalScrollBarPolicy">
 					<enum>Qt::ScrollBarAlwaysOff</enum>
 				</property>
@@ -36,9 +33,15 @@
 					<bool>true</bool>
 				</property>
 				<layout class="QGridLayout" name="gridLayout" rowstretch="0">
+					<property name="margin">
+						<number>20</number>
+					</property>
+					<property name="spacing">
+							<number>5</number>
+						</property>
 					<property name="sizeConstraint">
 						<enum>QLayout::SetMinimumSize</enum>
-					</property>
+					<!-- </property>
 					<item row="0" column="0">
 						<spacer name="verticalSpacer">
 							<property name="orientation">
@@ -51,7 +54,7 @@
 								</size>
 							</property>
 						</spacer>
-					</item>
+					</item> -->
 				</layout>
             </widget>
 		</item>
