@@ -25,7 +25,7 @@ using namespace std;
 const wregex variable_regex(L"\\{\\{(\\w+)\\}\\}");
 
 void OBSTextMustacheDefinitions::UpdateTemplateSources() {
-	std::for_each(templateSources.begin(), templateSources.end(), [](obs_weak_source_t *weak_source){
+	for (auto weak_source = templateSources.begin(); weak_source != templateSources.end(); ++weak_source) {
 		obs_source_t *source = obs_weak_source_get_source(weak_source);
 		if(obs_source_removed(source)) {
 			obs_weak_source_release(weak_source);
@@ -53,7 +53,8 @@ void OBSTextMustacheDefinitions::FindVariables()
 	VariablesAndValues *variablesAndValues =
 		VariablesAndValues::getInstance();
 
-	std::for_each(templateSources.begin(), templateSources.end(), [](obs_weak_source_t *source){
+	for (auto weak_source = templateSources.begin(); weak_source != templateSources.end(); ++weak_source) {
+		obs_source_t *source = obs_weak_source_get_source(weak_source);
 		TextSource *mySource = reinterpret_cast<TextSource *>(
 			obs_obj_get_data(source));
 
@@ -84,15 +85,18 @@ void OBSTextMustacheDefinitions::FindVariables()
 				variablesAndValues->putVariable(variable);
 			}
 		}
+		obs_source_release(source);
 	});
 }
 
 void OBSTextMustacheDefinitions::UpdateRenderedText()
 {
-	std::for_each(templateSources.begin(), templateSources.end(), [](obs_weak_source_t *source){
+	for (auto weak_source = templateSources.begin(); weak_source != templateSources.end(); ++weak_source) {
+		obs_source_t *source = obs_weak_source_get_source(weak_source);
 		TextSource *mySource = reinterpret_cast<TextSource *>(
 			obs_obj_get_data(source));
 		mySource->UpdateTextToRender();
+		obs_source_release(source);
 	}
 }
 
