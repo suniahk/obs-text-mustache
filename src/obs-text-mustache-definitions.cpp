@@ -165,7 +165,7 @@ void OBSTextMustacheDefinitions::UpdateUI()
 		ui->gridLayout->addWidget(label, currentRow, 0);
 		QLineEdit *lineEdit =
 			new QLineEdit(variablesAndValues->getValue(*it));
-		QObject::connect(lineEdit, &QLineEdit::textChanged, this, UpdateVariables);
+		QObject::connect(lineEdit, &QLineEdit::textChanged, this, &UpdateVariables);
 		textLines[*it] = lineEdit;
 		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
