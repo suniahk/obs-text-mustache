@@ -26,10 +26,10 @@ const wregex variable_regex(L"\\{\\{(\\w+)\\}\\}");
 
 void OBSTextMustacheDefinitions::UpdateTemplateSources() {
 	for (auto weak_source = templateSources.begin(); weak_source != templateSources.end(); ++weak_source) {
-		obs_source_t *source = obs_weak_source_get_source(weak_source);
+		obs_source_t *source = obs_weak_source_get_source(*weak_source);
 		if(obs_source_removed(source)) {
-			obs_weak_source_release(weak_source);
-			templateSources.erase(weak_source);
+			obs_weak_source_release(*weak_source);
+			templateSources.erase(*weak_source);
 		}
 
 		obs_source_release(source);
@@ -54,7 +54,7 @@ void OBSTextMustacheDefinitions::FindVariables()
 		VariablesAndValues::getInstance();
 
 	for (auto weak_source = templateSources.begin(); weak_source != templateSources.end(); ++weak_source) {
-		obs_source_t *source = obs_weak_source_get_source(weak_source);
+		obs_source_t *source = obs_weak_source_get_source(*weak_source);
 		TextSource *mySource = reinterpret_cast<TextSource *>(
 			obs_obj_get_data(source));
 
@@ -92,7 +92,7 @@ void OBSTextMustacheDefinitions::FindVariables()
 void OBSTextMustacheDefinitions::UpdateRenderedText()
 {
 	for (auto weak_source = templateSources.begin(); weak_source != templateSources.end(); ++weak_source) {
-		obs_source_t *source = obs_weak_source_get_source(weak_source);
+		obs_source_t *source = obs_weak_source_get_source(*weak_source);
 		TextSource *mySource = reinterpret_cast<TextSource *>(
 			obs_obj_get_data(source));
 		mySource->UpdateTextToRender();
