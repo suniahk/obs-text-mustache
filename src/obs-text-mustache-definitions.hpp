@@ -1,6 +1,7 @@
 #pragma once
 
 #include <obs-frontend-api.h>
+#include <obs.h>
 #include <QString>
 #include <QWidget>
 #include <QDockWidget>
@@ -9,6 +10,7 @@
 #include <obs.hpp>
 #include <memory>
 #include <map>
+#include <set>
 
 #include "ui_OBSTextMustacheDefinitions.h"
 

@@ -6,6 +6,7 @@
 #include <regex>
 #include <iterator>
 
+#include <obs.h>
 #include <obs-module.h>
 #include <QMainWindow>
 #include <util/platform.h>
@@ -24,11 +25,14 @@ using namespace std;
 const wregex variable_regex(L"\\{\\{(\\w+)\\}\\}");
 
 void OBSTextMustacheDefinitions::UpdateTemplateSources() {
-	std::for_each(templateSources.begin(), templateSources.end(), [](obs_weak_source_t *source){
+	std::for_each(templateSources.begin(), templateSources.end(), [](obs_weak_source_t *weak_source){
+		obs_source_t *source = obs_weak_source_get_source(weak_source);
 		if(obs_source_removed(source)) {
-			obs_weak_source_release(source);
-			templateSources.erase(source);
+			obs_weak_source_release(weak_source);
+			templateSources.erase(weak_source);
 		}
+
+		obs_source_release(source);
 	});
 
 	obs_enum_sources(FindTemplateSources, this);
