@@ -31,7 +31,7 @@ class OBSTextMustacheDefinitions : public QWidget {
 		std::map<QString, QLineEdit *> textLines;
 		std::map<QString, QLabel *> textLabels;
 
-		std::set<obs_source_t *> templateSources;
+		std::set<obs_weak_source_t *> templateSources;
 
 	private slots:
 		void SignalSourceUpdate();
