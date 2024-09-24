@@ -19,13 +19,17 @@ class OBSTextMustacheDefinitions : public QWidget {
 		static void OBSSignal(void *data, const char *signal,
 					calldata_t *call_data);
 		static void OBSEvent(enum obs_frontend_event event, void *);
-		static bool FindVariables(void *data, obs_source_t *source);
-		static bool UpdateVariables(void *data, obs_source_t *source);
-		static bool UpdateRenderedText(void *data, obs_source_t *source);
-		void UpdateAll();
+		void FindVariables();
+		static bool FindTemplateSources(void *data, obs_source_t *source);
+		void UpdateVariables();
+		void UpdateRenderedText();
+		void UpdateUI();
+		void UpdateTemplateSources();
 		std::unique_ptr<Ui_OBSTextMustacheDefinitions> ui;
 		std::map<QString, QLineEdit *> textLines;
 		std::map<QString, QLabel *> textLabels;
+
+		std::set<obs_source_t *> templateSources;
 
 	private slots:
 		void SignalSourceUpdate();

@@ -23,14 +23,33 @@ using namespace std;
 
 const wregex variable_regex(L"\\{\\{(\\w+)\\}\\}");
 
-bool OBSTextMustacheDefinitions::FindVariables(void *data, obs_source_t *source)
+void OBSTextMustacheDefinitions::UpdateTemplateSources() {
+	std::for_each(templateSources.begin(), templateSources.end(), [](obs_weak_source_t *source){
+		if(obs_source_removed(source)) {
+			obs_weak_source_release(source);
+			templateSources.erase(source);
+		}
+	});
+
+	obs_enum_sources(FindTemplateSources, this);
+}
+
+bool OBSTextMustacheDefinitions::FindTemplateSources(void *data, obs_source_t *source) {
+	const char *id = obs_source_get_id(source);
+
+	if (!strcmp("text_gdiplus_mustache_v2", id) && !templateSources.count(source)) {
+		templateSources.insert(obs_source_get_ref(source));
+	}
+
+	return true;
+}
+
+void OBSTextMustacheDefinitions::FindVariables()
 {
 	VariablesAndValues *variablesAndValues =
 		VariablesAndValues::getInstance();
 
-	const char *id = obs_source_get_id(source);
-
-	if (!strcmp("text_gdiplus_mustache_v2", id)) {
+	std::for_each(templateSources.begin(), templateSources.end(), [](obs_weak_source_t *source){
 		TextSource *mySource = reinterpret_cast<TextSource *>(
 			obs_obj_get_data(source));
 
@@ -61,32 +80,17 @@ bool OBSTextMustacheDefinitions::FindVariables(void *data, obs_source_t *source)
 				variablesAndValues->putVariable(variable);
 			}
 		}
-	}
-
-	return true;
+	});
 }
 
-bool OBSTextMustacheDefinitions::UpdateRenderedText(void *data, obs_source_t *source)
+void OBSTextMustacheDefinitions::UpdateRenderedText()
 {
-	const char *id = obs_source_get_id(source);
-	if (!strcmp("text_gdiplus_mustache_v2", id)) {
+	std::for_each(templateSources.begin(), templateSources.end(), [](obs_weak_source_t *source){
 		TextSource *mySource = reinterpret_cast<TextSource *>(
 			obs_obj_get_data(source));
 		mySource->UpdateTextToRender();
 	}
-
-	return true;
 }
-
-// static void loadVariablesAndValues(obs_data_t *data, void *param)
-// {
-// 	VariablesAndValues *const variablesAndValues =
-// 		VariablesAndValues::getInstance();
-// 	const auto variables = variablesAndValues->getVariables();
-
-// 	variablesAndValues->putValue(obs_data_get_string(data, "variable"),
-// 				     obs_data_get_string(data, "value"));
-// }
 
 OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	: QWidget(parent),
@@ -107,32 +111,34 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	hide();
 }
 
-bool OBSTextMustacheDefinitions::UpdateVariables(void *data, obs_source_t *source) {
+void OBSTextMustacheDefinitions::UpdateVariables() {
+	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateVariables called");
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 
-	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(data);
 	const auto variables = variablesAndValues->getVariables();
 	for (auto it = variables.begin(); it != variables.end(); ++it) {
 		const auto variable = *it;
-		const auto value = mustache->textLines[*it]->text();
+		const auto value = textLines[*it]->text();
 		variablesAndValues->putValue(variable, value);
 		blog(LOG_DEBUG, "UpdateVariables: Setting variable %s to %s",
 		     variable.toStdString().c_str(),
 		     value.toStdString().c_str());
 	}
 
+	UpdateRenderedText();
+
 	return true;
 }
 
-void OBSTextMustacheDefinitions::UpdateAll()
+void OBSTextMustacheDefinitions::UpdateUI()
 {
-	obs_enum_sources(FindVariables, this);
+	FindVariables();
 
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 
-		blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateAll Triggered");
+		blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Triggered");
 
 	ui->gridLayout->setColumnStretch(0, 1);
 	ui->gridLayout->setColumnStretch(1, 2);
@@ -153,18 +159,16 @@ void OBSTextMustacheDefinitions::UpdateAll()
 		ui->gridLayout->addWidget(label, currentRow, 0);
 		QLineEdit *lineEdit =
 			new QLineEdit(variablesAndValues->getValue(*it));
-		QObject::connect(lineEdit, &QLineEdit::textChanged, this, [=](QString obj) { variablesAndValues->putValue(*it, obj); });
+		QObject::connect(lineEdit, &QLineEdit::textChanged, this, UpdateVariables);
 		textLines[*it] = lineEdit;
 		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
-
-	obs_enum_sources(UpdateVariables, this);
-	obs_enum_sources(UpdateRenderedText, this);
 }
 
 void OBSTextMustacheDefinitions::SignalSourceUpdate() {
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::SignalSourceUpdate called");
-	UpdateAll();
+	UpdateTemplateSources();
+	UpdateUI();
 }
 
 void OBSTextMustacheDefinitions::OBSSignal(void *data, const char *signal,
@@ -198,7 +202,8 @@ void OBSTextMustacheDefinitions::OBSEvent(enum obs_frontend_event event, void *p
 	switch (event) {
 	case OBS_FRONTEND_EVENT_SCENE_CHANGED:
 	case OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED:
-		mustache->UpdateAll();
+		mustache->UpdateTemplateSources();
+		mustache->UpdateUI();
 		break;
 	default:
 		break;
