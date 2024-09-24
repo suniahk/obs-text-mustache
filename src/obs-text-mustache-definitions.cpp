@@ -33,7 +33,7 @@ void OBSTextMustacheDefinitions::UpdateTemplateSources() {
 		}
 
 		obs_source_release(source);
-	});
+	}
 
 	obs_enum_sources(FindTemplateSources, this);
 }
@@ -86,7 +86,7 @@ void OBSTextMustacheDefinitions::FindVariables()
 			}
 		}
 		obs_source_release(source);
-	});
+	}
 }
 
 void OBSTextMustacheDefinitions::UpdateRenderedText()
@@ -119,7 +119,7 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	hide();
 }
 
-void OBSTextMustacheDefinitions::UpdateVariables() {
+void OBSTextMustacheDefinitions::UpdateVariables(QString &text) {
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateVariables called");
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
@@ -135,8 +135,6 @@ void OBSTextMustacheDefinitions::UpdateVariables() {
 	}
 
 	UpdateRenderedText();
-
-	return true;
 }
 
 void OBSTextMustacheDefinitions::UpdateUI()

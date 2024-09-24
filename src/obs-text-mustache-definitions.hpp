@@ -23,7 +23,6 @@ class OBSTextMustacheDefinitions : public QWidget {
 		static void OBSEvent(enum obs_frontend_event event, void *);
 		void FindVariables();
 		static bool FindTemplateSources(void *data, obs_source_t *source);
-		void UpdateVariables();
 		void UpdateRenderedText();
 		void UpdateUI();
 		void UpdateTemplateSources();
@@ -35,6 +34,7 @@ class OBSTextMustacheDefinitions : public QWidget {
 
 	private slots:
 		void SignalSourceUpdate();
+		void UpdateVariables(QString &text);
 
 	public:
 		OBSTextMustacheDefinitions(QWidget *parent = nullptr);
