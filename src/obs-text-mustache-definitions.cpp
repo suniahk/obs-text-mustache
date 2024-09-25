@@ -27,7 +27,7 @@ const wregex variable_regex(L"\\{\\{(\\w+)\\}\\}");
 
 void OBSTextMustacheDefinitions::UpdateTemplateSources() {
 	for (auto &weak_source : OBSTextMustacheDefinitions::templateSources) {
-		obs_source_t *source = obs_weak_source_get_source(*weak_source);
+		obs_source_t *source = obs_weak_source_get_source(weak_source);
 		if(obs_source_removed(source)) {
 			obs_weak_source_release(weak_source);
 			OBSTextMustacheDefinitions::templateSources.erase(weak_source);
@@ -58,7 +58,7 @@ void OBSTextMustacheDefinitions::FindVariables()
 		VariablesAndValues::getInstance();
 
 	for (auto &weak_source : OBSTextMustacheDefinitions::templateSources) {
-		obs_source_t *source = obs_weak_source_get_source(*weak_source);
+		obs_source_t *source = obs_weak_source_get_source(weak_source);
 		TextSource *mySource = reinterpret_cast<TextSource *>(
 			obs_obj_get_data(source));
 
