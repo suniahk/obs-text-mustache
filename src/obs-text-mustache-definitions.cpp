@@ -147,6 +147,10 @@ void OBSTextMustacheDefinitions::UpdateVariables(const QString &variable) {
 
 void OBSTextMustacheDefinitions::UpdateUI()
 {
+	VariablesAndValues *const variablesAndValues =
+		VariablesAndValues::getInstance();
+
+	const auto variables = variablesAndValues->getVariables();
 
 	for (const auto &[textVar, textField] : textLines) {
 		if(!variables.count(textVar)) {
@@ -155,23 +159,8 @@ void OBSTextMustacheDefinitions::UpdateUI()
 			textField->deleteLater();
 		}
 	}
-	
+
 	FindVariables();
-
-	VariablesAndValues *const variablesAndValues =
-		VariablesAndValues::getInstance();
-
-		blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Triggered");
-
-	//ui->gridLayout->setColumnStretch(0, 1);
-	//ui->gridLayout->setColumnStretch(1, 2);
-
-	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateAll GetVariables");
-
-	const auto variables = variablesAndValues->getVariables();
-	//int currentRow = 0;
-	//textLines.clear();
-
 
 	for(const auto &variable : variables) {
 	//for (auto it = variables.begin(); it != variables.end();
@@ -187,8 +176,6 @@ void OBSTextMustacheDefinitions::UpdateUI()
 		QObject::connect(lineEdit, &QLineEdit::textChanged, lineEditSignalMapper, qOverload<>(&QSignalMapper::map));
 		textLines[variable] = lineEdit;
 		ui->gridLayout->addRow(label, lineEdit);
-		//ui->gridLayout->addWidget(label, rowCount, 0);
-		//ui->gridLayout->addWidget(lineEdit, rowCount, 1);
 	}
 }
 
