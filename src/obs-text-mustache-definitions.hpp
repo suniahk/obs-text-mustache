@@ -8,7 +8,6 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QSignalMapper>
-#include <obs.hpp>
 #include <memory>
 #include <map>
 #include <set>
