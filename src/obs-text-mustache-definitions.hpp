@@ -34,7 +34,7 @@ class OBSTextMustacheDefinitions : public QWidget {
 
 	private slots:
 		void SignalSourceUpdate();
-		void UpdateVariables();
+		void UpdateVariables(QString &);
 
 	public:
 		OBSTextMustacheDefinitions(QWidget *parent = nullptr);

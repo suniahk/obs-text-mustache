@@ -41,8 +41,10 @@ void OBSTextMustacheDefinitions::UpdateTemplateSources() {
 bool OBSTextMustacheDefinitions::FindTemplateSources(void *data, obs_source_t *source) {
 	const char *id = obs_source_get_id(source);
 
-	if (!strcmp("text_gdiplus_mustache_v2", id) && !templateSources.count(source)) {
-		templateSources.insert(obs_source_get_ref(source));
+	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(data);
+
+	if (!strcmp("text_gdiplus_mustache_v2", id) && !mustache->templateSources.count(source)) {
+		mustache->templateSources.insert(obs_source_get_ref(source));
 	}
 
 	return true;
