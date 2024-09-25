@@ -40,13 +40,15 @@ void OBSTextMustacheDefinitions::UpdateTemplateSources() {
 
 bool OBSTextMustacheDefinitions::FindTemplateSources(void *data, obs_source_t *source) {
 	const char *id = obs_source_get_id(source);
+	auto *weak_source = obs_source_get_weak_source(source);
 
 	OBSTextMustacheDefinitions *mustache = static_cast<OBSTextMustacheDefinitions *>(data);
 
-	if (!strcmp("text_gdiplus_mustache_v2", id) && !mustache->templateSources.count(source)) {
+	if (!strcmp("text_gdiplus_mustache_v2", id) && !mustache->templateSources.count(weak_source)) {
 		mustache->templateSources.insert(obs_source_get_ref(source));
 	}
 
+	obs_weak_source_release(weak_source);
 	return true;
 }
 
@@ -167,7 +169,7 @@ void OBSTextMustacheDefinitions::UpdateUI()
 		ui->gridLayout->addWidget(label, currentRow, 0);
 		QLineEdit *lineEdit =
 			new QLineEdit(variablesAndValues->getValue(*it));
-		QObject::connect(lineEdit, &QLineEdit::textChanged, this, &UpdateVariables);
+		QObject::connect(lineEdit, &QLineEdit::textChanged, this, UpdateVariables);
 		textLines[*it] = lineEdit;
 		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
 	}
