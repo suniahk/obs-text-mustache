@@ -30,7 +30,6 @@ class OBSTextMustacheDefinitions : public QWidget {
 		std::map<QString, QLineEdit *> textLines;
 		std::map<QString, QLabel *> textLabels;
 
-		static std::set<obs_weak_source_t *> templateSources;
 		QSignalMapper *lineEditSignalMapper;
 
 	private slots:
@@ -40,4 +39,5 @@ class OBSTextMustacheDefinitions : public QWidget {
 	public:
 		OBSTextMustacheDefinitions(QWidget *parent = nullptr);
 		~OBSTextMustacheDefinitions();
+		static std::set<obs_weak_source_t *> templateSources;
 };
