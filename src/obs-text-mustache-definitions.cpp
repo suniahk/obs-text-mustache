@@ -147,6 +147,15 @@ void OBSTextMustacheDefinitions::UpdateVariables(const QString &variable) {
 
 void OBSTextMustacheDefinitions::UpdateUI()
 {
+
+	for (const auto &[textVar, textField] : textLines) {
+		if(!variables.count(textVar)) {
+			ui->gridLayout->removeRow(textField);
+			textField->disconnect();
+			textField->deleteLater();
+		}
+	}
+	
 	FindVariables();
 
 	VariablesAndValues *const variablesAndValues =
@@ -163,13 +172,6 @@ void OBSTextMustacheDefinitions::UpdateUI()
 	//int currentRow = 0;
 	//textLines.clear();
 
-	for (const auto &[textVar, textField] : textLines) {
-		if(!variables.count(textVar)) {
-			ui->gridLayout->removeRow(textField);
-			textField->disconnect();
-			textField->deleteLater();
-		}
-	}
 
 	for(const auto &variable : variables) {
 	//for (auto it = variables.begin(); it != variables.end();
