@@ -7,6 +7,7 @@
 #include <QDockWidget>
 #include <QLineEdit>
 #include <QLabel>
+#include <QSignalMapper>
 #include <obs.hpp>
 #include <memory>
 #include <map>
@@ -30,11 +31,12 @@ class OBSTextMustacheDefinitions : public QWidget {
 		std::map<QString, QLineEdit *> textLines;
 		std::map<QString, QLabel *> textLabels;
 
-		std::set<obs_weak_source_t *> templateSources;
+		static std::set<obs_weak_source_t *> templateSources;
+		QSignalMapper *lineEditSignalMapper;
 
 	private slots:
 		void SignalSourceUpdate();
-		void UpdateVariables(const QString &text);
+		void UpdateVariables(const QString &variable);
 
 	public:
 		OBSTextMustacheDefinitions(QWidget *parent = nullptr);

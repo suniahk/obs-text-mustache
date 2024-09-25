@@ -14,6 +14,7 @@
 #include <QObject>
 #include <QString>
 #include <QLabel>
+#include <QSignalMapper>
 #include <QLineEdit>
 #include "obs-text.hpp"
 #include "variables.hpp"
@@ -96,8 +97,8 @@ void OBSTextMustacheDefinitions::FindVariables()
 
 void OBSTextMustacheDefinitions::UpdateRenderedText()
 {
-	for (auto weak_source = templateSources.begin(); weak_source != templateSources.end(); ++weak_source) {
-		obs_source_t *source = obs_weak_source_get_source(*weak_source);
+	for (const auto &weak_source : OBSTextMustacheDefinitions::templateSources) {
+		obs_source_t *source = obs_weak_source_get_source(weak_source);
 		TextSource *mySource = reinterpret_cast<TextSource *>(
 			obs_obj_get_data(source));
 		mySource->UpdateTextToRender();
@@ -113,6 +114,9 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
+
+	lineEditSignalMapper = new QSignalMapper(this);
+	QObject::connect(lineEditSignalMapper,&QSignalMapper::mappedString,this,&OBSTextMustacheDefinitions::UpdateVariables);
 		
 
 	obs_frontend_add_save_callback(VariablesAndValues::storeVariables, variablesAndValues);
@@ -124,20 +128,21 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	hide();
 }
 
-void OBSTextMustacheDefinitions::UpdateVariables(QString &text) {
+void OBSTextMustacheDefinitions::UpdateVariables(const QString &variable) {
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateVariables called");
 	VariablesAndValues *const variablesAndValues =
 		VariablesAndValues::getInstance();
 
-	const auto variables = variablesAndValues->getVariables();
-	for (auto it = variables.begin(); it != variables.end(); ++it) {
-		const auto variable = *it;
-		const auto value = textLines[*it]->text();
+	//const auto variables = variablesAndValues->getVariables();
+	//for(const auto &variable : variables) {
+	//for (auto it = variables.begin(); it != variables.end(); ++it) {
+		//const auto variable = *it;
+		const auto value = textLines[variable]->text();
 		variablesAndValues->putValue(variable, value);
 		blog(LOG_DEBUG, "UpdateVariables: Setting variable %s to %s",
 		     variable.toStdString().c_str(),
 		     value.toStdString().c_str());
-	}
+	//}
 
 	UpdateRenderedText();
 }
@@ -151,28 +156,40 @@ void OBSTextMustacheDefinitions::UpdateUI()
 
 		blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateUI Triggered");
 
-	ui->gridLayout->setColumnStretch(0, 1);
-	ui->gridLayout->setColumnStretch(1, 2);
+	//ui->gridLayout->setColumnStretch(0, 1);
+	//ui->gridLayout->setColumnStretch(1, 2);
 
 	blog(LOG_INFO, "OBSTextMustacheDefinitions::UpdateAll GetVariables");
 
 	const auto variables = variablesAndValues->getVariables();
-	int currentRow = 0;
+	//int currentRow = 0;
 	//textLines.clear();
 
-	for (auto it = variables.begin(); it != variables.end();
-	     ++it, ++currentRow) {
+	for (const auto &inputRow : textLines) {
+		if(!variables.count(inputRow->first)) {
+			auto *lineEdit = *inputRow->second;
+			ui->gridLayout->removeRow(lineEdit);
+			lineEdit->disconnect();
+			lineEdit->deleteLater();
+		}
+	}
+
+	for(const auto &variable : variables)
+	//for (auto it = variables.begin(); it != variables.end();
+	//     ++it, ++currentRow) {
 		if(textLines.count(*it)) {
 			continue;
 		}
-		QLabel *label = new QLabel(*it);
+		//auto rowCount = ui->gridLayout->rowCount();
+		QLabel *label = new QLabel(variable);
 		label->setAlignment(Qt::AlignVCenter);
-		ui->gridLayout->addWidget(label, currentRow, 0);
 		QLineEdit *lineEdit =
-			new QLineEdit(variablesAndValues->getValue(*it));
-		QObject::connect(lineEdit, &QLineEdit::textChanged, this, &OBSTextMustacheDefinitions::UpdateVariables);
-		textLines[*it] = lineEdit;
-		ui->gridLayout->addWidget(lineEdit, currentRow, 1);
+			new QLineEdit(variablesAndValues->getValue(variable));
+		QObject::connect(lineEdit, &QLineEdit::textChanged, lineEditSignalMapper, qOverload<>(&QSignalMapper::map));
+		textLines[variable] = lineEdit;
+		ui->gridLayout->addRow(label, lineEdit);
+		//ui->gridLayout->addWidget(label, rowCount, 0);
+		//ui->gridLayout->addWidget(lineEdit, rowCount, 1);
 	}
 }
 

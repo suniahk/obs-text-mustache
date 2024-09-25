@@ -32,9 +32,9 @@
 				<property name="widgetResizable">
 					<bool>true</bool>
 				</property>
-				<layout class="QGridLayout" name="gridLayout" rowstretch="0">
+				<layout class="QFormLayout" name="gridLayout" rowstretch="0">
 					<property name="margin">
-						<number>20</number>
+						<number>8</number>
 					</property>
 					<property name="spacing">
 							<number>5</number>
