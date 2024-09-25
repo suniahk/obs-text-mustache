@@ -165,9 +165,9 @@ void OBSTextMustacheDefinitions::UpdateUI()
 	//int currentRow = 0;
 	//textLines.clear();
 
-	for (const auto &[textVar, *textField] : textLines) {
+	for (const auto &[textVar, textField] : textLines) {
 		if(!variables.count(textVar)) {
-			ui->gridLayout->removeRow(textField);
+			ui->gridLayout->removeRow(*textField);
 			textField->disconnect();
 			textField->deleteLater();
 		}
@@ -176,7 +176,7 @@ void OBSTextMustacheDefinitions::UpdateUI()
 	for(const auto &variable : variables)
 	//for (auto it = variables.begin(); it != variables.end();
 	//     ++it, ++currentRow) {
-		if(textLines.count(*it)) {
+		if(textLines.count(variable)) {
 			continue;
 		}
 		//auto rowCount = ui->gridLayout->rowCount();
