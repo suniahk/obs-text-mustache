@@ -57,6 +57,9 @@ void OBSTextMustacheDefinitions::FindVariables()
 	VariablesAndValues *variablesAndValues =
 		VariablesAndValues::getInstance();
 
+	variablesAndValues->clear();
+
+	//std::set<QString> newVariables;
 	for (auto &weak_source : OBSTextMustacheDefinitions::templateSources) {
 		obs_source_t *source = obs_weak_source_get_source(weak_source);
 		TextSource *mySource = reinterpret_cast<TextSource *>(
@@ -82,15 +85,22 @@ void OBSTextMustacheDefinitions::FindVariables()
 			blog(LOG_DEBUG,
 			     "findVariables: found variable %s in the scene",
 			     variable.toStdString().c_str());
-			if (!variablesAndValues->contains(variable)) {
-				blog(LOG_DEBUG,
-				     "findVariables: adding variable %s",
-				     variable.toStdString().c_str());
-				variablesAndValues->putVariable(variable);
-			}
+			variablesAndValues->putVariable(variable);
+			//newVariables.append(variable);
 		}
 		obs_source_release(source);
 	}
+
+	//
+
+// 	if (!variablesAndValues->contains(variable)) {
+				
+					 
+// 			}
+// blog(LOG_DEBUG,
+// 				     "findVariables: adding variable %s",
+// 				     variable.toStdString().c_str());
+// 	variablesAndValues->putVariable(variable);
 }
 
 void OBSTextMustacheDefinitions::UpdateRenderedText()
