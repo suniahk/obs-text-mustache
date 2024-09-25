@@ -28,7 +28,6 @@ class OBSTextMustacheDefinitions : public QWidget {
 		void UpdateTemplateSources();
 		std::unique_ptr<Ui_OBSTextMustacheDefinitions> ui;
 		std::map<QString, QLineEdit *> textLines;
-		std::map<QString, QLabel *> textLabels;
 
 		QSignalMapper *lineEditSignalMapper;
 
@@ -39,5 +38,5 @@ class OBSTextMustacheDefinitions : public QWidget {
 	public:
 		OBSTextMustacheDefinitions(QWidget *parent = nullptr);
 		~OBSTextMustacheDefinitions();
-		static std::set<obs_weak_source_t *> templateSources;
+		inline static std::set<obs_weak_source_t *> templateSources;
 };
