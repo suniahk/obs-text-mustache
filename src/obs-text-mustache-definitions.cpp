@@ -40,7 +40,6 @@ OBSTextMustacheDefinitions::OBSTextMustacheDefinitions(QWidget *parent)
 	auto * signalHandler = obs_get_signal_handler();
 	//signal_handler_connect_global(obs_get_signal_handler(), OBSSignal, this);
 	signal_handler_connect(signalHandler, "source_update", obsSourceUpdated, this);
-	signal_handler_connect(signalHandler, "source_load", obsSourceUpdated, this);
 	signal_handler_connect(signalHandler, "source_remove", obsSourceRemoved, this);
 
 	hide();
@@ -195,6 +194,5 @@ void OBSTextMustacheDefinitions::UpdateUI()
 OBSTextMustacheDefinitions::~OBSTextMustacheDefinitions() {
 	auto * signalHandler = obs_get_signal_handler();
 	signal_handler_disconnect(signalHandler, "source_update", obsSourceUpdated, this);
-	signal_handler_disconnect(signalHandler, "source_load", obsSourceUpdated, this);
 	signal_handler_disconnect(signalHandler, "source_remove", obsSourceRemoved, this);
 }
