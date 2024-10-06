@@ -6,6 +6,8 @@
 #ifndef DATETIME_H
 #define DATETIME_H
 
+std::wstring getFormattedTime(const tm *localTime, const char *format);
+
 std::wstring getCurrentMonthName(const tm *localTime);
 
 std::wstring getCurrentYear(const tm *localTime);

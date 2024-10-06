@@ -10,74 +10,54 @@
 #include "datetime.h"
 using namespace std;
 
+wstring getFormattedTime(const struct tm *const localTime, const wchar_t *format) {
+	std::wstringstream wss;
+	wss << std::put_time(localTime, format);
+
+	return wss.str();
+}
+
 wstring getCurrentMonthName(const struct tm *const localTime)
 {
-	std::ostringstream oss;
-	oss << std::put_time(localTime, "%B");
-
-	return QString::fromStdString(oss.str()).toStdWString();
+	return getFormattedTime(localTime, L"%B");
 }
 
 wstring getCurrentYear(const struct tm *const localTime)
 {
-	std::ostringstream oss;
-	oss << std::put_time(localTime, "%EY");
-
-	return QString::fromStdString(oss.str()).toStdWString();
+	return getFormattedTime(localTime, L"%EY");
 }
 
 wstring getCurrentDay(const struct tm *const localTime)
 {
-	std::ostringstream oss;
-	oss << std::put_time(localTime, "%e");
-
-	return QString::fromStdString(oss.str()).toStdWString();
+	return getFormattedTime(localTime, L"%e");
 }
 
 wstring getCurrentDayOfWeek(const struct tm *const localTime)
 {
-	std::ostringstream oss;
-	oss << std::put_time(localTime, "%A");
-
-	return QString::fromStdString(oss.str()).toStdWString();
+	return getFormattedTime(localTime, L"%A");
 }
 
 wstring getCurrent24Hour(const struct tm *const localTime)
 {
-	std::ostringstream oss;
-	oss << std::put_time(localTime, "%OH");
-
-	return QString::fromStdString(oss.str()).toStdWString();
+	return getFormattedTime(localTime, L"%OH");
 }
 
 wstring getCurrent12Hour(const struct tm *const localTime)
 {
-	std::ostringstream oss;
-	oss << std::put_time(localTime, "%OI");
-
-	return QString::fromStdString(oss.str()).toStdWString();
+	return getFormattedTime(localTime, L"%OI");
 }
 
 wstring getCurrentMinute(const struct tm *const localTime)
 {
-	std::ostringstream oss;
-	oss << std::put_time(localTime, "%M");
-
-	return QString::fromStdString(oss.str()).toStdWString();
+	return getFormattedTime(localTime, L"%M");
 }
 
 wstring getCurrentSecond(const struct tm *const localTime)
 {
-	std::ostringstream oss;
-	oss << std::put_time(localTime, "%S");
-
-	return QString::fromStdString(oss.str()).toStdWString();
+	return getFormattedTime(localTime, L"%S");
 }
 
 wstring getCurrentAmPm(const struct tm *const localTime)
 {
-	std::ostringstream oss;
-	oss << std::put_time(localTime, "%p");
-
-	return QString::fromStdString(oss.str()).toStdWString();
+	return getFormattedTime(localTime, L"%p");
 }

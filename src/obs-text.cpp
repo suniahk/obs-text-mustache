@@ -764,7 +764,7 @@ inline void TextSource::Render()
 void TextSource::UpdateTextToRender()
 {
 	blog(LOG_DEBUG, "UpdateTextToRender: initial text_to_render %s",
-	     QString::fromStdWString(text_to_render).toStdString().c_str());
+	     QString::fromStdWString(text_to_render).toStdString());
 	text_to_render = text;
 	text_to_render = evaluateConditionals(text_to_render);
 	text_to_render = replaceVariables(text_to_render);

@@ -24,9 +24,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QString>
 #include <obs-frontend-api.h>
 #include <obs.hpp>
+#include <filesystem>
 #include <util/util.hpp>
 #include <util/platform.h>
 #include "obs-text-mustache-definitions.hpp"
+#include "variables.hpp"
 #include "plugin-lifetime.hpp"
 #include "types.h"
 
@@ -39,6 +41,17 @@ bool obs_module_load()
 	auto *window = (QMainWindow *)obs_frontend_get_main_window();
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
+
+	char *configPath = obs_module_config_path("");
+	try {
+		if(!std::filesystem::create_directory(configPath)) {
+			blog(LOG_DEBUG, "obs-text-mustache-definitions data directory already exists, continuing.");
+		}
+	} catch(std::exception){
+		blog(LOG_INFO, "obs-text-mustache-definitions data directory could not be created.");
+	}
+
+	bfree(configPath);
 
 	auto *obsTextMustache = new OBSTextMustacheDefinitions(window);
 
@@ -57,7 +70,10 @@ bool obs_module_load()
 
 void obs_module_unload()
 {
+	VariablesAndValues *const variablesAndValues =
+		VariablesAndValues::getInstance();
 	FreeOBSText();
+	variablesAndValues->storeAll();
 	obs_log(LOG_INFO, "plugin unloaded");
 }
 

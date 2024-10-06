@@ -18,25 +18,25 @@ class OBSTextMustacheDefinitions : public QWidget {
 	Q_OBJECT
 
 	private:
-		static void OBSSignal(void *data, const char *signal,
-					calldata_t *call_data);
-		static void OBSEvent(enum obs_frontend_event event, void *);
+		static void obsSourceSignalHandler(void *data, calldata_t *call_data, const char* callbackMethod, bool includeSourceParam);
+		static void obsSourceUpdated(void *data, calldata_t *call_data);
+		static void obsSourceRemoved(void *data, calldata_t *call_data);
 		void FindVariables();
-		static bool FindTemplateSources(void *data, obs_source_t *source);
 		void UpdateRenderedText();
 		void UpdateUI();
-		void UpdateTemplateSources();
 		std::unique_ptr<Ui_OBSTextMustacheDefinitions> ui;
 		std::map<QString, QLineEdit *> textLines;
+		void AddOrUpdateTemplateSource(obs_source_t *source);
 
 		QSignalMapper *lineEditSignalMapper;
 
 	private slots:
-		void SignalSourceUpdate();
-		void UpdateVariables(const QString &variable);
+		void VerifyKnownTemplateSources();
+		void SignalSourceUpdate(obs_source *source);
+		void UpdateTemplatedValue(const QString &variable);
 
 	public:
 		OBSTextMustacheDefinitions(QWidget *parent = nullptr);
 		~OBSTextMustacheDefinitions();
-		inline static std::set<obs_weak_source_t *> templateSources;
+		inline static std::set<obs_source_t *> templateSources;
 };
