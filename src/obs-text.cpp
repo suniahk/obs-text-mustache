@@ -764,7 +764,7 @@ inline void TextSource::Render()
 void TextSource::UpdateTextToRender()
 {
 	blog(LOG_DEBUG, "UpdateTextToRender: initial text_to_render %s",
-	     QString::fromStdWString(text_to_render).toStdString().c_str());
+	     QString::fromStdWString(text_to_render).toStdString());
 	text_to_render = text;
 	text_to_render = evaluateConditionals(text_to_render);
 	text_to_render = replaceVariables(text_to_render);
@@ -779,11 +779,6 @@ static ULONG_PTR gdip_token = 0;
 
 //OBS_DECLARE_MODULE()
 //OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
-
-MODULE_EXPORT const char *obs_module_description(void)
-{
-	return "Windows GDI+ text source with templating";
-}
 
 #define set_vis(var, val, show)                           \
 	do {                                              \
@@ -993,7 +988,7 @@ static void missing_file_callback(void *src, const char *new_path, void *data)
 	UNUSED_PARAMETER(data);
 }
 
-extern "C" bool InitOBSText()
+bool InitOBSText()
 {
 	obs_source_info si = {};
 	si.id = "text_gdiplus_mustache";
@@ -1072,7 +1067,7 @@ extern "C" bool InitOBSText()
 	return true;
 }
 
-extern "C" void FreeOBSText()
+void FreeOBSText()
 {
 	GdiplusShutdown(gdip_token);
 }

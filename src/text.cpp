@@ -26,12 +26,12 @@ wstring evaluateConditionals(const std::wstring &initial)
 		const QString variable = QString::fromStdWString(match_str);
 		VariablesAndValues *variablesAndValues =
 			VariablesAndValues::getInstance();
-		// blog(LOG_INFO, "found conditional for %s", variable.toStdString().c_str());
+		// blog(LOG_INFO, "found conditional for %s", variable.toStdString());
 		if (variablesAndValues->contains(variable) &&
 		    !variablesAndValues->getValue(variable)
 			     .toStdWString()
 			     .empty()) {
-			// blog(LOG_INFO, "replacing conditional for %s", variable.toStdString().c_str());
+			// blog(LOG_INFO, "replacing conditional for %s", variable.toStdString());
 			wstringstream buf;
 			buf << L"\\{\\{#if " << variable.toStdWString()
 			    << L"\\}\\}(.*)\\{\\{/if "
@@ -66,17 +66,14 @@ wstring replaceVariables(const wstring &initial)
 	wstring text_to_render = initial;
 	VariablesAndValues *variablesAndValues =
 		VariablesAndValues::getInstance();
-	const auto variables = variablesAndValues->getVariables();
-	for (auto it = variables.begin(); it != variables.end(); ++it) {
-		const wstring value =
-			variablesAndValues->getValue(*it).toStdWString();
+	const auto variables = variablesAndValues->getAll();
+	for (const auto &[variable, value]: variables) {
 		if (value.size() > 0) {
-			const wstring variable = (*it).toStdWString();
 			wstringstream buf;
-			buf << L"\\{\\{" << variable << L"\\}\\}";
+			buf << L"\\{\\{" << (variable.toStdWString()) << L"\\}\\}";
 			const wregex re(buf.str());
 			text_to_render =
-				regex_replace(text_to_render, re, value);
+				regex_replace(text_to_render, re, value.toStdWString());
 			blog(LOG_DEBUG, "UpdateTextToRender: text_to_render %s",
 			     QString::fromStdWString(text_to_render)
 				     .toStdString()
@@ -84,7 +81,7 @@ wstring replaceVariables(const wstring &initial)
 		}
 	}
 	blog(LOG_DEBUG, "replaceVariables: final text_to_render %s",
-	     QString::fromStdWString(text_to_render).toStdString().c_str());
+	     QString::fromStdWString(text_to_render).toStdString());
 	return text_to_render;
 }
 
@@ -93,6 +90,7 @@ wstring replaceDateTimes(const wstring &initial)
 	wstring text_to_render = initial;
 	time_t currentTime = time(nullptr);
 	struct tm *localTime = localtime(&currentTime);
+	// Note: Can't this just formatted using strftime?
 
 	text_to_render = regex_replace(text_to_render,
 				       wregex(L"\\{\\{DateTime month\\}\\}"),
@@ -126,6 +124,6 @@ wstring replaceDateTimes(const wstring &initial)
 				       getCurrentAmPm(localTime));
 
 	blog(LOG_DEBUG, "replaceDateTimes: final text_to_render %s",
-	     QString::fromStdWString(text_to_render).toStdString().c_str());
+	     QString::fromStdWString(text_to_render).toStdString());
 	return text_to_render;
 }
