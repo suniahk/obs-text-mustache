@@ -55,9 +55,9 @@ bool obs_module_load()
 
 	auto *obsTextMustache = new OBSTextMustacheDefinitions(window);
 
-	//const QString title = QString::fromUtf8(obs_module_text("Text Template Values"));
-	const QString title = QString::fromUtf8(obs_module_text("OBSTextMustacheDefinitions"));
 	const auto name = "OBSTextMustacheDefinitions";
+
+	const QString title = QString::fromUtf8(obs_module_text(name));
 
 	obs_frontend_add_dock_by_id(name, title.toUtf8().constData(),
 				    obsTextMustache);

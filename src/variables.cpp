@@ -21,7 +21,7 @@ VariablesAndValues *VariablesAndValues::getInstance()
 	return self;
 }
 
-void VariablesAndValues::updateVariables(std::set<QString> updatedList) {
+void VariablesAndValues::updateVariables(const std::set<QString> &updatedList) {
 	for(auto &variable : variables) {
 		if(!updatedList.count(variable)) {
 			obs_data_erase(dataStorage, variable.toUtf8());
@@ -53,9 +53,7 @@ void VariablesAndValues::putValue(const QString &variable, const QString &value)
 	     variable.toStdString(), value.toStdString());
 
 	putVariable(variable);
-	obs_data_set_string(
- 					dataStorage, variable.toUtf8(),
- 					value.toUtf8());
+	obs_data_set_string(dataStorage, variable.toUtf8(), value.toUtf8());
 }
 
 const set<QString> &VariablesAndValues::getVariables()
