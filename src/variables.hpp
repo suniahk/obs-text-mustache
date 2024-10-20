@@ -10,7 +10,7 @@ public:
 	static VariablesAndValues *getInstance();
 	void storeAll();
 	std::map<QString, QString> getAll();
-	void updateVariables(std::set<QString> updatedList);
+	void updateVariables(const std::set<QString> &updatedList);
 	void putVariable(const QString &variable);
 	void putValue(const QString &variable, const QString &value);
 	const std::set<QString> &getVariables();
